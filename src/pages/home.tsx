@@ -33,7 +33,7 @@ function ProductShowcase() {
             src={product.image}
             alt={`${product.name} preview`}
           />
-          <div className="flex flex-col gap-3 border-t border-border/80 bg-card px-4 py-3 sm:absolute sm:inset-x-5 sm:bottom-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:border sm:bg-background/85 sm:py-2.5 sm:backdrop-blur-md">
+          <div className="flex flex-col gap-3 border-t border-border/80 bg-card px-4 py-3 sm:absolute sm:inset-x-5 sm:bottom-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:border sm:bg-background/85 sm:py-2.5 sm:backdrop-blur-md">
             <div className="flex min-w-0 items-center gap-3 sm:shrink-0">
               <span className="shrink-0 text-sm leading-5 font-bold text-foreground">{product.name}</span>
               <span className="truncate text-xs leading-5 font-medium text-muted-foreground">{product.category}</span>
