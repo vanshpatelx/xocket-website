@@ -27,7 +27,7 @@ export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel }: Spli
               <XocketMark className="size-5" />
               <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
             </Link>
-            {panel}
+            <div className="stagger">{panel}</div>
 
             <div className="mt-12 md:hidden" aria-label={showcaseLabel}>
               {showcase}

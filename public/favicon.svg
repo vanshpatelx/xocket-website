@@ -3,7 +3,7 @@
   <defs>
     <linearGradient id="xocket" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
       <stop stop-color="#ffffff" />
-      <stop offset="1" stop-color="#A5F3FC" />
+      <stop offset="1" stop-color="#A3A3A3" />
     </linearGradient>
   </defs>
 </svg>

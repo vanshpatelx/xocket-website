@@ -46,7 +46,7 @@ function ProductShowcase() {
               {[product.type, ...product.stack].map((tag, tagIndex) => (
                 <span
                   className={`shrink-0 border px-2 py-0.5 text-[11px] leading-4 font-medium ${
-                    tagIndex === 0 ? 'border-primary/40 bg-primary/15 text-foreground' : 'border-border bg-card/80 text-muted-foreground'
+                    tagIndex === 0 ? 'border-foreground/25 bg-foreground/10 text-foreground' : 'border-border bg-card/80 text-muted-foreground'
                   } ${tagIndex >= 3 ? 'sm:hidden xl:inline-block' : ''}`}
                   key={tag}
                 >
@@ -103,8 +103,8 @@ function ShippedBadge() {
       aria-label={shipped.map((item) => `${item.value}+ ${item.label}`).join(', ')}
     >
       <span className="relative flex size-2" aria-hidden="true">
-        <span className="absolute inline-flex size-full animate-ping bg-primary opacity-60" />
-        <span className="relative inline-flex size-2 bg-primary" />
+        <span className="absolute inline-flex size-full animate-ping bg-foreground opacity-40" />
+        <span className="relative inline-flex size-2 bg-foreground" />
       </span>
       {shipped.map((item, index) => (
         <span className="flex items-center gap-3" key={item.label} aria-hidden="true">

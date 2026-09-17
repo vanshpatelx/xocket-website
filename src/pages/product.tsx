@@ -1,6 +1,6 @@
 import { SplitLayout } from "@/components/split-layout"
 import { buttonVariants } from "@/components/ui/button"
-import { products, type Product as ProductData } from "@/data/products"
+import { products, type CaseStudyStep, type Product as ProductData } from "@/data/products"
 import { CONTACT_EMAIL } from "@/lib/site"
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
 import { useEffect, type ReactNode } from "react"
@@ -10,22 +10,55 @@ function displayUrl(url: string) {
   return url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
+/** A panel section separated by a rule that runs across the panel's grid lines */
+function Block({ label, children }: { label?: string; children: ReactNode }) {
+  return (
+    <section className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4">
+      {label && <h2 className="mb-5 font-mono text-xs leading-4 tracking-wide text-muted-foreground uppercase">{label}</h2>}
+      <div className="space-y-4 text-sm leading-6 text-muted-foreground">{children}</div>
+    </section>
+  )
+}
+
+function Bullets({ items }: { items: string[] }) {
+  return (
+    <ul className="list-disc space-y-1 pl-4 marker:text-muted-foreground/60">
+      {items.map((item) => (
+        <li key={item}>{item}</li>
+      ))}
+    </ul>
+  )
+}
+
+function Steps({ items }: { items: CaseStudyStep[] }) {
+  return (
+    <div className="space-y-4">
+      {items.map((item) => (
+        <div key={item.title}>
+          <h3 className="text-sm leading-6 font-medium text-foreground">{item.title}</h3>
+          <p>{item.description}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 function Facts({ product }: { product: ProductData }) {
   const rows: { label: string; value: ReactNode }[] = [
     { label: 'Client', value: product.client },
-    { label: 'Product', value: product.name },
     { label: 'Industry', value: product.category },
+    { label: 'Year', value: product.year },
     { label: 'Stage', value: product.stage },
     { label: 'Engagement', value: product.engagement },
     { label: 'Services', value: product.services.join(', ') },
-    { label: 'Tech stack', value: product.stack.join(' · ') },
+    { label: 'Stack', value: product.stack.join(', ') },
   ]
   if (product.results) rows.push({ label: 'Results', value: product.results })
   if (product.url) {
     rows.push({
       label: 'Website',
       value: (
-        <a className="inline-flex items-center gap-1 text-foreground underline-offset-4 hover:underline" href={product.url} target="_blank" rel="noreferrer">
+        <a className="inline-flex items-center gap-1 underline-offset-4 hover:underline" href={product.url} target="_blank" rel="noreferrer">
           {displayUrl(product.url)}
           <ArrowUpRight className="size-3.5" aria-hidden="true" />
         </a>
@@ -34,133 +67,111 @@ function Facts({ product }: { product: ProductData }) {
   }
 
   return (
-    <dl className="mt-10 divide-y divide-border/80 border-y border-border/80">
+    <dl className="grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] gap-x-4 gap-y-3 text-sm leading-6">
       {rows.map((row) => (
-        <div className="grid grid-cols-[7rem_1fr] gap-4 py-3" key={row.label}>
-          <dt className="text-xs leading-5 font-semibold tracking-widest text-muted-foreground uppercase">{row.label}</dt>
-          <dd className="text-sm leading-5 font-medium text-foreground/90">{row.value}</dd>
+        <div className="contents" key={row.label}>
+          <dt className="text-muted-foreground">{row.label}</dt>
+          <dd className="text-foreground">{row.value}</dd>
         </div>
       ))}
     </dl>
   )
 }
 
-function Section({ index, title, children }: { index: number; title: string; children: ReactNode }) {
-  return (
-    <section className="mt-12 border-t border-border/80 pt-8">
-      <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
-        {String(index).padStart(2, '0')}
-      </div>
-      <h2 className="mt-2 text-xl leading-7 font-bold tracking-tight text-foreground">{title}</h2>
-      <div className="mt-4 space-y-4 text-sm leading-6 text-muted-foreground">{children}</div>
-    </section>
-  )
-}
-
-function Bullets({ items }: { items: string[] }) {
-  return (
-    <ul className="space-y-2">
-      {items.map((item) => (
-        <li className="flex gap-3 text-foreground/90" key={item}>
-          <span className="mt-2 size-1.5 shrink-0 bg-primary" aria-hidden="true" />
-          {item}
-        </li>
-      ))}
-    </ul>
-  )
-}
-
-function CaseStudyDetails({ product }: { product: ProductData }) {
+function CaseStudyPanel({ product, next }: { product: ProductData; next: ProductData }) {
   const study = product.caseStudy ?? {}
-  let sectionIndex = 0
 
   return (
     <>
+      <div className="pb-8">
+        <Link className="inline-flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground -ml-2" to="/" aria-label="Back to all work">
+          <ArrowLeft className="size-4" aria-hidden="true" />
+        </Link>
+        <h1 className="mt-5 text-base leading-6 font-semibold text-foreground">{product.name}</h1>
+        <div className="mt-2 space-y-4 text-sm leading-6 text-muted-foreground">
+          {product.intro.map((paragraph) => (
+            <p key={paragraph}>{paragraph}</p>
+          ))}
+        </div>
+      </div>
+
+      <Block>
+        <Facts product={product} />
+      </Block>
+
       {study.challenge && (
-        <Section index={++sectionIndex} title="The challenge">
+        <Block label="The challenge">
           <p>{study.challenge.intro}</p>
           {study.challenge.points && <Bullets items={study.challenge.points} />}
           {study.challenge.closing && <p>{study.challenge.closing}</p>}
-        </Section>
+        </Block>
       )}
 
       {study.approach && (
-        <Section index={++sectionIndex} title="How we structured it">
+        <Block label="How we structured it">
           <p>{study.approach.intro}</p>
-          <div className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-foreground">
-            {study.approach.steps.map((step, stepIndex) => (
-              <span className="flex items-center gap-1.5" key={step.title}>
-                {stepIndex > 0 && <ArrowRight className="size-3.5 text-muted-foreground" aria-hidden="true" />}
-                <span className="border border-border bg-card px-2.5 py-1">{step.title}</span>
-              </span>
-            ))}
-          </div>
-          <div className="divide-y divide-border/80 border-y border-border/80">
-            {study.approach.steps.map((step) => (
-              <div className="py-3" key={step.title}>
-                <h3 className="text-sm leading-6 font-bold text-foreground">{step.title}</h3>
-                <p className="mt-0.5">{step.description}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
+          <p className="font-mono text-xs text-foreground">{study.approach.steps.map((step) => step.title).join(' → ')}</p>
+          <Steps items={study.approach.steps} />
+        </Block>
       )}
 
       {study.features && (
-        <Section index={++sectionIndex} title="What we built">
-          <div className="divide-y divide-border/80 border-y border-border/80">
-            {study.features.map((feature) => (
-              <div className="py-3" key={feature.title}>
-                <h3 className="text-sm leading-6 font-bold text-foreground">{feature.title}</h3>
-                <p className="mt-0.5">{feature.description}</p>
-              </div>
-            ))}
-          </div>
-        </Section>
+        <Block label="What we built">
+          <Steps items={study.features} />
+        </Block>
       )}
 
       {study.outcome && (
-        <Section index={++sectionIndex} title="The outcome">
+        <Block label="The outcome">
           {study.outcome.intro && <p>{study.outcome.intro}</p>}
           {study.outcome.metrics && (
-            <div className="grid grid-cols-3 divide-x divide-border/80 border border-border/80">
+            <dl className="grid grid-cols-3 gap-4">
               {study.outcome.metrics.map((metric) => (
-                <div className="px-3 py-4 text-center" key={metric.label}>
-                  <div className="text-xl leading-7 font-bold text-foreground">{metric.value}</div>
-                  <div className="mt-0.5 text-[11px] leading-4 font-medium text-muted-foreground">{metric.label}</div>
+                <div key={metric.label}>
+                  <dt className="sr-only">{metric.label}</dt>
+                  <dd className="text-xl leading-7 font-semibold tracking-tight text-foreground">{metric.value}</dd>
+                  <dd className="text-xs leading-5">{metric.label}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
           )}
           {study.outcome.points && <Bullets items={study.outcome.points} />}
-        </Section>
+        </Block>
       )}
 
       {study.testimonial && (
-        <figure className="mt-12 border-t border-border/80 pt-8">
-          <blockquote className="text-base leading-7 font-medium text-foreground">“{study.testimonial.quote}”</blockquote>
-          <figcaption className="mt-4">
-            <div className="text-sm font-bold text-foreground">{study.testimonial.name}</div>
-            <div className="text-sm text-muted-foreground">{study.testimonial.role}</div>
-          </figcaption>
-        </figure>
+        <Block>
+          <figure>
+            <blockquote className="text-sm leading-6 text-foreground">“{study.testimonial.quote}”</blockquote>
+            <figcaption className="mt-4 text-sm leading-6">
+              <div className="text-foreground">{study.testimonial.name}</div>
+              <div>{study.testimonial.role}</div>
+            </figcaption>
+          </figure>
+        </Block>
       )}
 
-      <section className="mt-12 border border-border/80 bg-card p-5">
-        <h2 className="text-lg leading-7 font-bold tracking-tight text-foreground">Have a complex product to build?</h2>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Tell us what you’re building. Book a call, or email us whenever it suits.
-        </p>
-        <div className="mt-5 flex flex-wrap items-center gap-2">
+      <Block label="Work with us">
+        <p>Have a complex product to build? Tell us what you’re building. Book a call, or email us whenever it suits.</p>
+        <div className="flex flex-wrap items-center gap-4 pt-1">
           <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}>
             Book a call
-            <ArrowUpRight aria-hidden="true" />
           </a>
-          <a className={buttonVariants({ variant: 'ghost' })} href={`mailto:${CONTACT_EMAIL}`}>
+          <a className="text-sm text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
             {CONTACT_EMAIL}
           </a>
         </div>
-      </section>
+      </Block>
+
+      <Block label="Next">
+        <Link className="group flex items-center justify-between gap-4" to={`/work/${next.slug}`}>
+          <span>
+            <span className="block text-sm leading-6 font-medium text-foreground">{next.name}</span>
+            <span className="block text-sm leading-6">{next.category}</span>
+          </span>
+          <ArrowRight className="size-4 text-muted-foreground transition-[color,translate] group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden="true" />
+        </Link>
+      </Block>
     </>
   )
 }
@@ -192,39 +203,9 @@ export default function Product() {
     <SplitLayout
       // Remount per product so the showcase scroll position resets
       key={product.slug}
-      panelLabel={`${product.name} case study summary`}
-      panel={
-        <>
-          <Link className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" to="/">
-            <ArrowLeft className="size-4" aria-hidden="true" />
-            All work
-          </Link>
-          <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
-            {product.category} · {product.year}
-          </div>
-          <h1 className="mt-3 text-2xl leading-8 font-bold tracking-normal text-balance text-foreground">
-            {product.name}
-          </h1>
-          <div className="mt-4 space-y-3 text-base leading-6 font-medium text-muted-foreground">
-            {product.intro.map((paragraph) => (
-              <p key={paragraph}>{paragraph}</p>
-            ))}
-          </div>
-          <Facts product={product} />
-          <CaseStudyDetails product={product} />
-          <Link
-            className="group mt-4 flex items-center justify-between gap-4 border border-border/80 px-5 py-4"
-            to={`/work/${next.slug}`}
-          >
-            <div>
-              <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">Next product</div>
-              <div className="mt-1 text-base leading-6 font-bold text-foreground">{next.name}</div>
-            </div>
-            <ArrowRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden="true" />
-          </Link>
-        </>
-      }
-      showcaseLabel={`${product.name} case study`}
+      panelLabel={`${product.name} case study`}
+      panel={<CaseStudyPanel product={product} next={next} />}
+      showcaseLabel={`${product.name} screenshots`}
       showcase={
         <div className="grid gap-4">
           {[product.image, ...(product.gallery ?? [])].map((image, imageIndex) => (
