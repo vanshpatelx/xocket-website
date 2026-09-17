@@ -1,5 +1,6 @@
 import { buttonVariants } from "@/components/ui/button"
 import { ArrowUpRight, Mail } from "lucide-react"
+import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { products } from "@/data/products"
 
@@ -61,6 +62,61 @@ function ProductShowcase() {
   )
 }
 
+// Shipping counters shown in the badge at the top of the page
+const shipped = [
+  { value: 87, label: 'products shipped in 2026' },
+  { value: 27, label: 'in Q3' },
+]
+
+function useCountUp(target: number, duration = 1400) {
+  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [count, setCount] = useState(reducedMotion ? target : 0)
+
+  useEffect(() => {
+    if (reducedMotion) return
+    let frame = 0
+    const start = performance.now()
+    const tick = (now: number) => {
+      const progress = Math.min((now - start) / duration, 1)
+      setCount(Math.round(target * (1 - Math.pow(1 - progress, 3))))
+      if (progress < 1) frame = requestAnimationFrame(tick)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
+  }, [target, duration, reducedMotion])
+
+  return count
+}
+
+function ShippedCount({ value, label }: { value: number; label: string }) {
+  const count = useCountUp(value)
+  return (
+    <span>
+      <span className="font-bold text-foreground tabular-nums">{count}+</span> {label}
+    </span>
+  )
+}
+
+function ShippedBadge() {
+  return (
+    <div
+      className="inline-flex flex-wrap items-center gap-x-3 gap-y-1 border border-border/80 bg-card/60 px-3 py-1.5 text-xs leading-4 font-medium text-muted-foreground"
+      aria-label={shipped.map((item) => `${item.value}+ ${item.label}`).join(', ')}
+    >
+      <span className="relative flex size-2" aria-hidden="true">
+        <span className="absolute inline-flex size-full animate-ping bg-primary opacity-60" />
+        <span className="relative inline-flex size-2 bg-primary" />
+      </span>
+      {shipped.map((item, index) => (
+        <span className="flex items-center gap-3" key={item.label} aria-hidden="true">
+          {index > 0 && <span className="h-3 w-px bg-border" />}
+          <ShippedCount value={item.value} label={item.label} />
+        </span>
+      ))}
+    </div>
+  )
+}
+
 function Stats() {
   return (
     <div className="mt-12" aria-label="Xocket by the numbers">
@@ -90,6 +146,9 @@ export default function Home() {
               <XocketMark className="size-5" />
               <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
             </a>
+            <div className="mb-5">
+              <ShippedBadge />
+            </div>
             <h1 className="text-2xl leading-8 font-bold tracking-normal text-balance text-foreground">
               AI-native, end-to-end product engineering
             </h1>
