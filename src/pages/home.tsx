@@ -21,7 +21,7 @@ function scrollToVisible(anchor: string) {
 function ProductShowcase() {
   return (
     <div className="grid gap-4" data-anchor="work">
-      {products.map((product, index) => (
+      {products.map((product) => (
         <Link
           className="group relative block overflow-hidden rounded-none border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           key={product.slug}
@@ -33,16 +33,27 @@ function ProductShowcase() {
             src={product.image}
             alt={`${product.name} preview`}
           />
-          <div
-            className={`flex items-center gap-3 border-t border-border/80 bg-card px-4 py-2.5 sm:absolute sm:bottom-5 sm:max-w-[calc(100%-2.5rem)] sm:border sm:bg-background/85 sm:backdrop-blur-md ${
-              index % 2 === 0 ? 'sm:left-5' : 'sm:right-5'
-            }`}
-          >
-            <span className="shrink-0 text-sm leading-5 font-bold text-foreground">{product.name}</span>
-            <span className="truncate text-xs leading-5 font-medium text-muted-foreground">
-              {[product.category, ...product.stack].join(' · ')}
-            </span>
-            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden="true" />
+          <div className="flex flex-col gap-3 border-t border-border/80 bg-card px-4 py-3 sm:absolute sm:inset-x-5 sm:bottom-5 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:border sm:bg-background/85 sm:py-2.5 sm:backdrop-blur-md">
+            <div className="flex min-w-0 items-center gap-3 sm:shrink-0">
+              <span className="shrink-0 text-sm leading-5 font-bold text-foreground">{product.name}</span>
+              <span className="truncate text-xs leading-5 font-medium text-muted-foreground">{product.category}</span>
+              <span className="inline-flex shrink-0 items-center gap-1 text-xs leading-5 font-medium text-foreground/80 transition-colors group-hover:text-foreground">
+                Open
+                <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+              </span>
+            </div>
+            <div className="flex min-w-0 flex-wrap gap-1.5 sm:flex-nowrap sm:overflow-hidden">
+              {[product.type, ...product.stack].map((tag, tagIndex) => (
+                <span
+                  className={`shrink-0 border px-2 py-0.5 text-[11px] leading-4 font-medium ${
+                    tagIndex === 0 ? 'border-primary/40 bg-primary/15 text-foreground' : 'border-border bg-card/80 text-muted-foreground'
+                  } ${tagIndex >= 3 ? 'sm:hidden xl:inline-block' : ''}`}
+                  key={tag}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
           </div>
         </Link>
       ))}

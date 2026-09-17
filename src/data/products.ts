@@ -2,6 +2,8 @@ export type Product = {
   slug: string
   name: string
   category: string
+  /** What kind of product it is, shown as the first chip (e.g. Dashboard, Mobile App) */
+  type: string
   summary: string
   description: string
   image: string
@@ -20,6 +22,7 @@ export const products: Product[] = [
     slug: 'medesk',
     name: 'Medesk',
     category: 'Healthcare SaaS',
+    type: 'Dashboard',
     summary: 'Hospital operations dashboard for appointments, staff and department load.',
     description:
       'Medesk gives hospital teams one live view of appointments, wait times, bed occupancy and staff performance, with an AI assistant for smart queries across operational data.',
@@ -32,6 +35,7 @@ export const products: Product[] = [
     slug: 'bionis',
     name: 'Bionis',
     category: 'Health & Wellness',
+    type: 'Dashboard',
     summary: 'Personal wellness tracker scoring sleep, activity and recovery.',
     description:
       'Bionis turns sleep, activity and recovery signals into a daily wellness score, with AI insights that explain what changed and what to do next.',
@@ -44,6 +48,7 @@ export const products: Product[] = [
     slug: 'medesk-analytics',
     name: 'Medesk Analytics',
     category: 'Healthcare Data',
+    type: 'Analytics',
     summary: 'Reporting and trend analysis layer for clinical operations.',
     description:
       'An analytics module for Medesk that surfaces trends in appointment volume, no-shows and department load, with scheduled reports for hospital leadership.',
@@ -56,6 +61,7 @@ export const products: Product[] = [
     slug: 'bionis-coach',
     name: 'Bionis Coach',
     category: 'AI Assistant',
+    type: 'AI Assistant',
     summary: 'Conversational AI coach built on top of Bionis wellness data.',
     description:
       'An AI coach that reads Bionis health records and goals to give personalised, context-aware guidance on sleep, training and recovery.',
@@ -68,6 +74,7 @@ export const products: Product[] = [
     slug: 'medesk-staff',
     name: 'Medesk Staff',
     category: 'Workforce Management',
+    type: 'Web App',
     summary: 'Scheduling and performance tooling for clinical staff.',
     description:
       'Shift scheduling, patient load balancing and performance tracking for doctors and nurses, integrated with the core Medesk platform.',
@@ -80,6 +87,7 @@ export const products: Product[] = [
     slug: 'bionis-sleep',
     name: 'Bionis Sleep',
     category: 'Consumer Health',
+    type: 'Mobile App',
     summary: 'Sleep debt detection and recovery planning.',
     description:
       'Detects sleep debt from wearable data and builds recovery plans, with nightly summaries and weekly trends.',
