@@ -1,6 +1,6 @@
 # Xocket Website
 
-Marketing site for **Xocket**, an end-to-end product engineering studio.
+Marketing site for **Xocket**, an AI-native, end-to-end product engineering studio.
 
 Built with React 19, Vite, Tailwind CSS v4 and shadcn/ui (Base UI). Layout adapted from [qubydev/watermelon-website](https://github.com/qubydev/watermelon-website).
 
