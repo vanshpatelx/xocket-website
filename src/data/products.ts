@@ -8,6 +8,8 @@ export type Product = {
   stack: string[]
   services: string[]
   year: string
+  /** Extra screenshots shown on the product page after the main image */
+  gallery?: string[]
   /** Live product URL, shown as "Visit live product" when set */
   url?: string
 }

@@ -1,12 +1,12 @@
+import { SplitLayout } from "@/components/split-layout"
 import { buttonVariants } from "@/components/ui/button"
 import { products } from "@/data/products"
+import { CONTACT_EMAIL } from "@/lib/site"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import { useEffect } from "react"
 import { Link, useParams } from "react-router-dom"
 
-const CONTACT_EMAIL = 'hello@xocket.studio'
-
-function DetailList({ label, items }: { label: string; items: string[] }) {
+function TagGroup({ label, items }: { label: string; items: string[] }) {
   return (
     <div>
       <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">{label}</div>
@@ -44,66 +44,72 @@ export default function Product() {
     )
   }
 
+  const images = [product.image, ...(product.gallery ?? [])]
+
   return (
-    <main className="relative z-[1] min-h-screen px-5 py-8 sm:px-8 md:py-10">
-      <div className="mx-auto w-full max-w-6xl">
-        <header className="flex items-center justify-between gap-4">
-          <Link className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" to="/">
+    <SplitLayout
+      // Remount per product so the showcase scroll position resets
+      key={product.slug}
+      panelLabel={`${product.name} details`}
+      panel={
+        <>
+          <Link className="mb-8 inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" to="/">
             <ArrowLeft className="size-4" aria-hidden="true" />
             All work
           </Link>
-          <Link className="flex items-center gap-2.5" to="/" aria-label="Xocket home">
-            <img className="size-5" src="/favicon.svg" alt="" aria-hidden="true" />
-            <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
-          </Link>
-        </header>
-
-        <section className="mt-12 grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-end">
-          <div>
-            <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
-              {product.category} · {product.year}
-            </div>
-            <h1 className="mt-4 text-4xl leading-none font-bold tracking-tighter text-foreground uppercase sm:text-6xl">
-              {product.name}
-            </h1>
-            <p className="mt-5 max-w-xl text-base leading-7 font-medium text-muted-foreground">{product.description}</p>
-            <div className="mt-8 flex flex-wrap gap-2">
-              {product.url && (
-                <a className={buttonVariants({ variant: 'default' })} href={product.url} target="_blank" rel="noreferrer">
-                  Visit live product
-                  <ArrowUpRight aria-hidden="true" />
-                </a>
-              )}
-              <a
-                className={buttonVariants({ variant: product.url ? 'secondary' : 'default' })}
-                href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}
-              >
-                Build something similar
-                <ArrowUpRight aria-hidden="true" />
+          <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
+            {product.category} · {product.year}
+          </div>
+          <h1 className="mt-3 text-2xl leading-8 font-bold tracking-normal text-balance text-foreground">
+            {product.name}
+          </h1>
+          <p className="mt-4 text-base leading-6 font-medium text-muted-foreground">{product.description}</p>
+          <div className="mt-8 flex flex-wrap gap-2">
+            {product.url && (
+              <a className={buttonVariants({ variant: 'secondary' })} href={product.url} target="_blank" rel="noreferrer">
+                Visit live product
               </a>
+            )}
+            <a
+              className={buttonVariants({ variant: 'default' })}
+              href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}
+            >
+              Build something similar
+              <ArrowUpRight aria-hidden="true" />
+            </a>
+          </div>
+
+          <div className="mt-12 grid gap-6 border border-border/80 p-5">
+            <TagGroup label="Tech stack" items={product.stack} />
+            <TagGroup label="What we did" items={product.services} />
+          </div>
+
+          <Link
+            className="group mt-4 flex items-center justify-between gap-4 border border-border/80 bg-card px-5 py-4"
+            to={`/work/${next.slug}`}
+          >
+            <div>
+              <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">Next product</div>
+              <div className="mt-1 text-base leading-6 font-bold text-foreground">{next.name}</div>
             </div>
-          </div>
-          <div className="grid gap-6 border border-border/80 bg-background/60 p-5 sm:p-6">
-            <DetailList label="Tech stack" items={product.stack} />
-            <DetailList label="What we did" items={product.services} />
-          </div>
-        </section>
-
-        <div className="mt-12 overflow-hidden border border-border/80">
-          <img className="block h-auto w-full" src={product.image} alt={`${product.name} full preview`} />
+            <ArrowUpRight className="size-5 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden="true" />
+          </Link>
+        </>
+      }
+      showcaseLabel={`${product.name} screenshots`}
+      showcase={
+        <div className="grid gap-4">
+          {images.map((image, imageIndex) => (
+            <div className="overflow-hidden rounded-none" key={`${image}-${imageIndex}`}>
+              <img
+                className="block h-auto w-full rounded-none"
+                src={image}
+                alt={`${product.name} screenshot ${imageIndex + 1}`}
+              />
+            </div>
+          ))}
         </div>
-
-        <Link
-          className="group mt-4 flex items-center justify-between gap-4 border border-border/80 bg-card px-5 py-5 sm:px-6"
-          to={`/work/${next.slug}`}
-        >
-          <div>
-            <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">Next product</div>
-            <div className="mt-1 text-lg leading-6 font-bold text-foreground">{next.name}</div>
-          </div>
-          <ArrowUpRight className="size-5 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden="true" />
-        </Link>
-      </div>
-    </main>
+      }
+    />
   )
 }
