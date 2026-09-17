@@ -1,0 +1,9 @@
+<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M2 12C2 12 8 12 12 2C12 2 16 12 22 12C22 12 16 12 12 22C12 22 8 12 2 12Z" fill="url(#xocket)" />
+  <defs>
+    <linearGradient id="xocket" x1="2" y1="12" x2="22" y2="12" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffffff" />
+      <stop offset="1" stop-color="#A5F3FC" />
+    </linearGradient>
+  </defs>
+</svg>
