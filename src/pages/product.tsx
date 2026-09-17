@@ -47,24 +47,22 @@ function Facts({ product }: { product: ProductData }) {
 
 function Section({ index, title, children }: { index: number; title: string; children: ReactNode }) {
   return (
-    <section className="border-t border-border/80 px-6 py-14 sm:px-10 lg:px-16 lg:py-20">
-      <div className="max-w-2xl">
-        <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
-          {String(index).padStart(2, '0')}
-        </div>
-        <h2 className="mt-3 text-2xl leading-8 font-bold tracking-tight text-foreground sm:text-3xl sm:leading-9">{title}</h2>
-        <div className="mt-6 space-y-5 text-base leading-7 text-muted-foreground">{children}</div>
+    <section className="mt-12 border-t border-border/80 pt-8">
+      <div className="text-xs leading-4 font-semibold tracking-widest text-primary uppercase">
+        {String(index).padStart(2, '0')}
       </div>
+      <h2 className="mt-2 text-xl leading-7 font-bold tracking-tight text-foreground">{title}</h2>
+      <div className="mt-4 space-y-4 text-sm leading-6 text-muted-foreground">{children}</div>
     </section>
   )
 }
 
 function Bullets({ items }: { items: string[] }) {
   return (
-    <ul className="space-y-2.5">
+    <ul className="space-y-2">
       {items.map((item) => (
         <li className="flex gap-3 text-foreground/90" key={item}>
-          <span className="mt-2.5 size-1.5 shrink-0 bg-primary" aria-hidden="true" />
+          <span className="mt-2 size-1.5 shrink-0 bg-primary" aria-hidden="true" />
           {item}
         </li>
       ))}
@@ -72,20 +70,12 @@ function Bullets({ items }: { items: string[] }) {
   )
 }
 
-function Screenshot({ src, alt }: { src?: string; alt: string }) {
-  if (!src) return null
-  return <img className="block h-auto w-full rounded-none" src={src} alt={alt} />
-}
-
-function CaseStudyStory({ product }: { product: ProductData }) {
+function CaseStudyDetails({ product }: { product: ProductData }) {
   const study = product.caseStudy ?? {}
-  const [hero, ...gallery] = [product.image, ...(product.gallery ?? [])]
   let sectionIndex = 0
 
   return (
-    <article className="bg-background">
-      <Screenshot src={hero} alt={`${product.name} main screen`} />
-
+    <>
       {study.challenge && (
         <Section index={++sectionIndex} title="The challenge">
           <p>{study.challenge.intro}</p>
@@ -97,53 +87,47 @@ function CaseStudyStory({ product }: { product: ProductData }) {
       {study.approach && (
         <Section index={++sectionIndex} title="How we structured it">
           <p>{study.approach.intro}</p>
-          <div className="flex flex-wrap items-center gap-2 text-sm font-semibold text-foreground">
+          <div className="flex flex-wrap items-center gap-1.5 text-xs font-semibold text-foreground">
             {study.approach.steps.map((step, stepIndex) => (
-              <span className="flex items-center gap-2" key={step.title}>
-                {stepIndex > 0 && <ArrowRight className="size-4 text-muted-foreground" aria-hidden="true" />}
-                <span className="border border-border bg-card px-3 py-1.5">{step.title}</span>
+              <span className="flex items-center gap-1.5" key={step.title}>
+                {stepIndex > 0 && <ArrowRight className="size-3.5 text-muted-foreground" aria-hidden="true" />}
+                <span className="border border-border bg-card px-2.5 py-1">{step.title}</span>
               </span>
             ))}
           </div>
-          <div className="grid gap-px border border-border/80 bg-border/80 sm:grid-cols-2">
+          <div className="divide-y divide-border/80 border-y border-border/80">
             {study.approach.steps.map((step) => (
-              <div className="bg-background p-5" key={step.title}>
-                <h3 className="text-base leading-6 font-bold text-foreground">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6">{step.description}</p>
+              <div className="py-3" key={step.title}>
+                <h3 className="text-sm leading-6 font-bold text-foreground">{step.title}</h3>
+                <p className="mt-0.5">{step.description}</p>
               </div>
             ))}
           </div>
         </Section>
       )}
-
-      {gallery[0] && <Screenshot src={gallery[0]} alt={`${product.name} screen 2`} />}
 
       {study.features && (
         <Section index={++sectionIndex} title="What we built">
           <div className="divide-y divide-border/80 border-y border-border/80">
             {study.features.map((feature) => (
-              <div className="grid gap-1 py-4 sm:grid-cols-[14rem_1fr] sm:gap-6" key={feature.title}>
-                <h3 className="text-base leading-6 font-bold text-foreground">{feature.title}</h3>
-                <p className="text-sm leading-6">{feature.description}</p>
+              <div className="py-3" key={feature.title}>
+                <h3 className="text-sm leading-6 font-bold text-foreground">{feature.title}</h3>
+                <p className="mt-0.5">{feature.description}</p>
               </div>
             ))}
           </div>
         </Section>
       )}
 
-      {gallery.slice(1).map((src, galleryIndex) => (
-        <Screenshot src={src} alt={`${product.name} screen ${galleryIndex + 3}`} key={`${src}-${galleryIndex}`} />
-      ))}
-
       {study.outcome && (
         <Section index={++sectionIndex} title="The outcome">
           {study.outcome.intro && <p>{study.outcome.intro}</p>}
           {study.outcome.metrics && (
-            <div className="grid grid-cols-2 divide-x divide-border/80 border border-border/80 sm:grid-cols-3">
+            <div className="grid grid-cols-3 divide-x divide-border/80 border border-border/80">
               {study.outcome.metrics.map((metric) => (
-                <div className="px-4 py-5" key={metric.label}>
-                  <div className="text-3xl leading-9 font-bold tracking-tight text-foreground">{metric.value}</div>
-                  <div className="mt-1 text-xs leading-4 font-medium text-muted-foreground">{metric.label}</div>
+                <div className="px-3 py-4 text-center" key={metric.label}>
+                  <div className="text-xl leading-7 font-bold text-foreground">{metric.value}</div>
+                  <div className="mt-0.5 text-[11px] leading-4 font-medium text-muted-foreground">{metric.label}</div>
                 </div>
               ))}
             </div>
@@ -153,37 +137,31 @@ function CaseStudyStory({ product }: { product: ProductData }) {
       )}
 
       {study.testimonial && (
-        <section className="border-t border-border/80 px-6 py-14 sm:px-10 lg:px-16 lg:py-20">
-          <figure className="max-w-2xl">
-            <blockquote className="text-xl leading-8 font-medium text-foreground sm:text-2xl sm:leading-9">
-              “{study.testimonial.quote}”
-            </blockquote>
-            <figcaption className="mt-6">
-              <div className="text-sm font-bold text-foreground">{study.testimonial.name}</div>
-              <div className="text-sm text-muted-foreground">{study.testimonial.role}</div>
-            </figcaption>
-          </figure>
-        </section>
+        <figure className="mt-12 border-t border-border/80 pt-8">
+          <blockquote className="text-base leading-7 font-medium text-foreground">“{study.testimonial.quote}”</blockquote>
+          <figcaption className="mt-4">
+            <div className="text-sm font-bold text-foreground">{study.testimonial.name}</div>
+            <div className="text-sm text-muted-foreground">{study.testimonial.role}</div>
+          </figcaption>
+        </figure>
       )}
 
-      <section className="border-t border-border/80 bg-card px-6 py-14 sm:px-10 lg:px-16 lg:py-20">
-        <h2 className="max-w-xl text-2xl leading-8 font-bold tracking-tight text-foreground sm:text-3xl sm:leading-9">
-          Have a complex product to build?
-        </h2>
-        <p className="mt-3 max-w-xl text-base leading-7 text-muted-foreground">
+      <section className="mt-12 border border-border/80 bg-card p-5">
+        <h2 className="text-lg leading-7 font-bold tracking-tight text-foreground">Have a complex product to build?</h2>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
           Tell us what you’re building. Book a call, or email us whenever it suits.
         </p>
-        <div className="mt-8 flex flex-wrap items-center gap-4">
-          <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Let's talk")}`}>
+        <div className="mt-5 flex flex-wrap items-center gap-2">
+          <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}>
             Book a call
             <ArrowUpRight aria-hidden="true" />
           </a>
-          <a className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" href={`mailto:${CONTACT_EMAIL}`}>
+          <a className={buttonVariants({ variant: 'ghost' })} href={`mailto:${CONTACT_EMAIL}`}>
             {CONTACT_EMAIL}
           </a>
         </div>
       </section>
-    </article>
+    </>
   )
 }
 
@@ -233,20 +211,32 @@ export default function Product() {
             ))}
           </div>
           <Facts product={product} />
-          <div className="mt-8 flex flex-wrap gap-2">
-            <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}>
-              Book a call
-              <ArrowUpRight aria-hidden="true" />
-            </a>
-            <Link className={buttonVariants({ variant: 'secondary' })} to={`/work/${next.slug}`}>
-              Next: {next.name}
-              <ArrowRight aria-hidden="true" />
-            </Link>
-          </div>
+          <CaseStudyDetails product={product} />
+          <Link
+            className="group mt-4 flex items-center justify-between gap-4 border border-border/80 px-5 py-4"
+            to={`/work/${next.slug}`}
+          >
+            <div>
+              <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">Next product</div>
+              <div className="mt-1 text-base leading-6 font-bold text-foreground">{next.name}</div>
+            </div>
+            <ArrowRight className="size-5 text-muted-foreground transition-transform group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden="true" />
+          </Link>
         </>
       }
       showcaseLabel={`${product.name} case study`}
-      showcase={<CaseStudyStory product={product} />}
+      showcase={
+        <div className="grid gap-4">
+          {[product.image, ...(product.gallery ?? [])].map((image, imageIndex) => (
+            <img
+              className="block h-auto w-full rounded-none"
+              key={`${image}-${imageIndex}`}
+              src={image}
+              alt={`${product.name} screen ${imageIndex + 1}`}
+            />
+          ))}
+        </div>
+      }
     />
   )
 }
