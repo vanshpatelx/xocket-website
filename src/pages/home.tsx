@@ -1,5 +1,7 @@
 import { buttonVariants } from "@/components/ui/button"
-import { Mail } from "lucide-react"
+import { ArrowUpRight, Mail } from "lucide-react"
+import { Link } from "react-router-dom"
+import { products } from "@/data/products"
 
 const CONTACT_EMAIL = 'hello@xocket.studio'
 
@@ -7,15 +9,6 @@ const stats = [
   { value: '50+', label: 'Products built' },
   { value: '5d', label: 'To first prototype' },
   { value: '100%', label: 'Senior engineers' },
-]
-
-const products = [
-  { name: 'Studio Site 1', image: '/showcase/site-1.png' },
-  { name: 'Studio Site 2', image: '/showcase/site-2.png' },
-  { name: 'Studio Site 1 Variation', image: '/showcase/site-1.png' },
-  { name: 'Studio Site 2 Variation', image: '/showcase/site-2.png' },
-  { name: 'Studio Site 1 Concept', image: '/showcase/site-1.png' },
-  { name: 'Studio Site 2 Concept', image: '/showcase/site-2.png' },
 ]
 
 function scrollToVisible(anchor: string) {
@@ -32,13 +25,37 @@ function ProductShowcase() {
   return (
     <div className="grid gap-4" data-anchor="work">
       {products.map((product) => (
-        <div className="overflow-hidden rounded-none" key={product.name}>
+        <Link
+          className="group block overflow-hidden rounded-none border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+          key={product.slug}
+          to={`/work/${product.slug}`}
+          aria-label={`Open ${product.name}`}
+        >
           <img
-            className="block h-auto w-full rounded-none"
+            className="block h-auto w-full rounded-none transition-opacity group-hover:opacity-90"
             src={product.image}
             alt={`${product.name} preview`}
           />
-        </div>
+          <div className="flex flex-col gap-4 border-t border-border/80 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+            <div className="min-w-0">
+              <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+                <span className="text-base leading-6 font-bold text-foreground">{product.name}</span>
+                <span className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">{product.category}</span>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-1.5">
+                {product.stack.map((tech) => (
+                  <span className="border border-border bg-background/60 px-2 py-1 text-[11px] leading-4 font-medium text-muted-foreground" key={tech}>
+                    {tech}
+                  </span>
+                ))}
+              </div>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors group-hover:text-foreground">
+              View product
+              <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+            </span>
+          </div>
+        </Link>
       ))}
     </div>
   )
@@ -73,12 +90,6 @@ export default function Home() {
               <XocketMark className="size-5" />
               <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
             </a>
-            <div className="mb-4">
-              <div className="inline-flex items-center gap-2 bg-emerald-500/10 px-3 py-1.5 text-[10px] leading-4 font-semibold tracking-widest text-emerald-400 uppercase">
-                <span className="size-2 bg-emerald-500" aria-hidden="true" />
-                Open for projects
-              </div>
-            </div>
             <h1 className="text-2xl leading-8 font-bold tracking-normal text-balance text-foreground">
               AI-native, end-to-end product engineering
             </h1>
