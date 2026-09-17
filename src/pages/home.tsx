@@ -34,26 +34,15 @@ function ProductShowcase() {
             alt={`${product.name} preview`}
           />
           <div
-            className={`border-t border-border/80 bg-card px-5 py-4 sm:absolute sm:bottom-6 sm:max-w-sm sm:border sm:bg-background/85 sm:shadow-2xl sm:backdrop-blur-md lg:bottom-8 ${
-              index % 2 === 0 ? 'sm:left-6 lg:left-8' : 'sm:right-6 lg:right-8'
+            className={`flex items-center gap-3 border-t border-border/80 bg-card px-4 py-2.5 sm:absolute sm:bottom-5 sm:max-w-[calc(100%-2.5rem)] sm:border sm:bg-background/85 sm:backdrop-blur-md ${
+              index % 2 === 0 ? 'sm:left-5' : 'sm:right-5'
             }`}
           >
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <div className="text-base leading-6 font-bold text-foreground">{product.name}</div>
-                <div className="text-[11px] leading-4 font-semibold tracking-widest text-muted-foreground uppercase">{product.category}</div>
-              </div>
-              <span className="inline-flex size-8 shrink-0 items-center justify-center border border-border bg-card text-muted-foreground transition-colors group-hover:bg-primary group-hover:text-primary-foreground" aria-hidden="true">
-                <ArrowUpRight className="size-4" />
-              </span>
-            </div>
-            <div className="mt-3 flex flex-wrap gap-1.5">
-              {product.stack.map((tech) => (
-                <span className="border border-border bg-card/80 px-2 py-1 text-[11px] leading-4 font-medium text-muted-foreground" key={tech}>
-                  {tech}
-                </span>
-              ))}
-            </div>
+            <span className="shrink-0 text-sm leading-5 font-bold text-foreground">{product.name}</span>
+            <span className="truncate text-xs leading-5 font-medium text-muted-foreground">
+              {[product.category, ...product.stack].join(' · ')}
+            </span>
+            <ArrowUpRight className="size-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" aria-hidden="true" />
           </div>
         </Link>
       ))}
