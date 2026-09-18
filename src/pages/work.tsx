@@ -57,27 +57,20 @@ export default function Work() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/80 pt-6">
-          {filters.map((filter) => {
-            const count = filter === 'All' ? shots.length : shots.filter(({ product }) => product.type === filter).length
-            const isActive = filter === activeFilter
-            return (
-              <button
-                className={`-mb-px border-b pb-3 text-sm leading-5 font-medium transition-colors ${
-                  isActive
-                    ? 'border-foreground text-foreground'
-                    : 'border-transparent text-muted-foreground hover:text-foreground'
-                }`}
-                key={filter}
-                type="button"
-                onClick={() => setActiveFilter(filter)}
-                aria-pressed={isActive}
-              >
-                {filter}
-                <span className="ml-1.5 align-super text-[10px] text-muted-foreground/70">{count}</span>
-              </button>
-            )
-          })}
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-border/80 py-6">
+          {filters.map((filter) => (
+            <button
+              className={`font-mono text-xs leading-4 tracking-wide uppercase transition-colors ${
+                filter === activeFilter ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
+              }`}
+              key={filter}
+              type="button"
+              onClick={() => setActiveFilter(filter)}
+              aria-pressed={filter === activeFilter}
+            >
+              {filter}
+            </button>
+          ))}
         </div>
 
         {/* Masonry wall: tiles vary in height so it reads as a gallery, not a list */}
