@@ -1,7 +1,13 @@
 import { describe, expect, it } from 'vitest'
 import {
+  API_VERSION,
+  RATE_LIMIT,
+  acceptsMarkdown,
   apiError,
+  checkRateLimit,
   handleApi,
+  rateLimitHeaders,
+  stripApiVersion,
   markdownAssetPath,
   markdownResponse,
   normalizePath,
@@ -54,6 +60,97 @@ describe('accept negotiation', () => {
     const response = markdownResponse('# hi')
     expect(response.headers.get('content-type')).toBe('text/markdown; charset=utf-8')
     expect(response.headers.get('vary')).toBe('Accept')
+  })
+})
+
+describe('markdown on errors', () => {
+  it('accepts markdown even when html is preferred, for error bodies', () => {
+    expect(acceptsMarkdown('text/html;q=1.0, text/markdown;q=0.1')).toBe(true)
+    expect(acceptsMarkdown('application/markdown')).toBe(true)
+    expect(acceptsMarkdown('text/html')).toBe(false)
+    expect(acceptsMarkdown(null)).toBe(false)
+  })
+
+  it('treats application/markdown as markdown for pages too', () => {
+    expect(prefersMarkdown('application/markdown')).toBe(true)
+  })
+})
+
+describe('versioning', () => {
+  it('maps versioned paths onto the shared router', () => {
+    expect(stripApiVersion('/api/v1/products')).toEqual({ path: '/api/products', versioned: true })
+    expect(stripApiVersion('/api/v1')).toEqual({ path: '/api', versioned: true })
+    expect(stripApiVersion('/api/products')).toEqual({ path: '/api/products', versioned: false })
+  })
+
+  it('serves the same payload from versioned and unversioned paths', async () => {
+    const versioned = await handleApi(...Object.values(get(`/api/${API_VERSION}/products/medesk`)) as [Request, URL])!.json()
+    const alias = await handleApi(...Object.values(get('/api/products/medesk')) as [Request, URL])!.json()
+    expect(versioned).toEqual(alias)
+  })
+
+  it('stamps every response with the api version', () => {
+    const { request, url } = get('/api/products')
+    expect(handleApi(request, url)!.headers.get('x-api-version')).toBe(API_VERSION)
+  })
+
+  it('rejects an unknown version with a json error', async () => {
+    const { request, url } = get('/api/v9/products')
+    const response = handleApi(request, url)!
+    expect(response.status).toBe(404)
+    const body = await response.json()
+    expect(body.error.code).toBe('unsupported_version')
+    expect(body.error.hint).toContain(API_VERSION)
+  })
+})
+
+describe('rate limiting', () => {
+  it('counts requests within a window and blocks past the limit', () => {
+    const key = `test-${Math.random()}`
+    const first = checkRateLimit(key)
+    expect(first.allowed).toBe(true)
+    expect(first.remaining).toBe(RATE_LIMIT.limit - 1)
+
+    let last = first
+    for (let i = 1; i < RATE_LIMIT.limit; i += 1) last = checkRateLimit(key)
+    expect(last.allowed).toBe(true)
+    expect(last.remaining).toBe(0)
+
+    const over = checkRateLimit(key)
+    expect(over.allowed).toBe(false)
+  })
+
+  it('starts a fresh window once the old one expires', () => {
+    const key = `test-${Math.random()}`
+    const now = Date.now()
+    checkRateLimit(key, now)
+    const later = checkRateLimit(key, now + (RATE_LIMIT.windowSeconds + 1) * 1000)
+    expect(later.remaining).toBe(RATE_LIMIT.limit - 1)
+  })
+
+  it('emits the standard rate limit headers', () => {
+    const headers = rateLimitHeaders({ allowed: true, limit: 600, remaining: 599, resetSeconds: 60 })
+    expect(headers['RateLimit-Limit']).toBe('600')
+    expect(headers['RateLimit-Remaining']).toBe('599')
+    expect(headers['RateLimit-Reset']).toBe('60')
+    expect(headers['RateLimit-Policy']).toBe('600;w=60')
+  })
+
+  it('puts rate limit headers on api responses', () => {
+    const { request, url } = get('/api/studio')
+    const response = handleApi(request, url, `test-${Math.random()}`)!
+    expect(response.headers.get('ratelimit-limit')).toBe(String(RATE_LIMIT.limit))
+    expect(response.headers.get('ratelimit-remaining')).not.toBeNull()
+  })
+
+  it('returns 429 with Retry-After once the budget is spent', async () => {
+    const key = `test-${Math.random()}`
+    const { request, url } = get('/api/products')
+    for (let i = 0; i < RATE_LIMIT.limit; i += 1) handleApi(request, url, key)
+    const response = handleApi(request, url, key)!
+    expect(response.status).toBe(429)
+    expect(response.headers.get('retry-after')).not.toBeNull()
+    expect((await response.json()).error.code).toBe('rate_limited')
   })
 })
 
