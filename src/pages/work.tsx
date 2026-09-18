@@ -1,8 +1,8 @@
 import { products } from "@/data/products"
 import { CONTACT_EMAIL } from "@/lib/site"
 import { ArrowLeft, ArrowUpRight } from "lucide-react"
-import { useEffect } from "react"
-import { Link } from "react-router-dom"
+import { useEffect, useMemo } from "react"
+import { Link, useSearchParams } from "react-router-dom"
 
 /** Every screenshot we have, one card each, in product order */
 const shots = products.flatMap((product) =>
@@ -13,7 +13,22 @@ const shots = products.flatMap((product) =>
   })),
 )
 
+/** Filter tabs: "All" plus every product type in use */
+const filters = ['All', ...Array.from(new Set(products.map((product) => product.type)))]
+
 export default function Work() {
+  const [searchParams, setSearchParams] = useSearchParams()
+  const requested = searchParams.get('type')
+  const activeFilter = requested && filters.includes(requested) ? requested : 'All'
+
+  const setActiveFilter = (filter: string) => {
+    setSearchParams(filter === 'All' ? {} : { type: filter }, { replace: true })
+  }
+  const visible = useMemo(
+    () => (activeFilter === 'All' ? shots : shots.filter(({ product }) => product.type === activeFilter)),
+    [activeFilter],
+  )
+
   useEffect(() => {
     window.scrollTo(0, 0)
     document.title = 'Work | Xocket'
@@ -42,9 +57,32 @@ export default function Work() {
           </p>
         </div>
 
+        <div className="flex flex-wrap items-center gap-2 border-b border-border/80 py-6">
+          {filters.map((filter) => {
+            const count = filter === 'All' ? shots.length : shots.filter(({ product }) => product.type === filter).length
+            const isActive = filter === activeFilter
+            return (
+              <button
+                className={`inline-flex items-center gap-2 border px-3 py-1.5 text-xs leading-5 font-medium transition-colors ${
+                  isActive
+                    ? 'border-foreground bg-foreground text-background'
+                    : 'border-border bg-card text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+                }`}
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                aria-pressed={isActive}
+              >
+                {filter}
+                <span className={isActive ? 'text-background/60' : 'text-muted-foreground/60'}>{count}</span>
+              </button>
+            )
+          })}
+        </div>
+
         {/* Masonry wall: tiles vary in height so it reads as a gallery, not a list */}
         <div className="columns-2 gap-2 md:columns-3 [column-fill:_balance]">
-          {shots.map(({ image, product, key }) => (
+          {visible.map(({ image, product, key }) => (
             <Link
               className="group relative mb-4 block break-inside-avoid overflow-hidden border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               key={key}
