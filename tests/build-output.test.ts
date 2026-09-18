@@ -122,17 +122,31 @@ describe('machine-readable files', () => {
     }
   })
 
+  it('documents the mcp server and versioned api in llms.txt', () => {
+    const llms = read('llms.txt')
+    expect(llms).toContain('/mcp')
+    expect(llms).toContain('/.well-known/mcp')
+    expect(llms).toContain('/api/v1/products')
+  })
+
   it('publishes an openapi spec covering every endpoint', () => {
     const spec = JSON.parse(read('openapi.json'))
     expect(spec.openapi).toMatch(/^3\./)
     expect(spec.servers[0].url).toBe('https://dev.xocket.sh')
+    // Paths are versioned, and the policies agents rely on are documented.
+    expect(Object.keys(spec.paths).every((path) => path.startsWith('/api/v1/'))).toBe(true)
+    expect(spec.info.description).toContain('Versioning')
+    expect(spec.info.description).toContain('Deprecation policy')
+    expect(spec.info.description).toContain('Rate limits')
     const operations = Object.values(spec.paths).flatMap((path) => Object.values(path as object))
     expect(operations.length).toBe(3)
     const ids = operations.map((operation) => (operation as { operationId: string }).operationId)
     expect(new Set(ids).size).toBe(ids.length)
-    for (const operation of operations as { description: string; responses: object }[]) {
+    for (const operation of operations as { description: string; responses: Record<string, { headers?: object }> }[]) {
       expect(operation.description.length).toBeGreaterThan(20)
       expect(Object.keys(operation.responses)).toContain('200')
+      expect(Object.keys(operation.responses)).toContain('429')
+      expect(operation.responses['200'].headers).toHaveProperty('RateLimit-Limit')
     }
   })
 })
