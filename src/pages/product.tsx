@@ -189,7 +189,7 @@ export default function Product() {
 
   if (!product) {
     return (
-      <main className="relative z-[1] flex min-h-screen flex-col items-center justify-center gap-4 px-5 text-center">
+      <main className="page-grid relative z-[1] flex min-h-screen flex-col items-center justify-center gap-4 px-5 text-center">
         <h1 className="text-2xl font-bold text-foreground">Product not found</h1>
         <Link className={buttonVariants({ variant: 'secondary' })} to="/">
           <ArrowLeft aria-hidden="true" />

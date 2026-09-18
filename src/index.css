@@ -258,3 +258,35 @@ body::before {
         animation: none;
     }
 }
+
+/* Same framing rules as the left panel, for full-width pages */
+.page-grid {
+    --grid-line-x: 10px;
+    --grid-line-y: 16px;
+}
+
+@media (min-width: 640px) {
+    .page-grid {
+        --grid-line-x: 16px;
+    }
+}
+
+@media (min-width: 768px) {
+    .page-grid {
+        --grid-line-y: 20px;
+    }
+}
+
+.page-grid::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+        linear-gradient(to right, transparent var(--grid-line-x), var(--border) var(--grid-line-x), var(--border) calc(var(--grid-line-x) + 1px), transparent calc(var(--grid-line-x) + 1px)),
+        linear-gradient(to right, transparent calc(100% - var(--grid-line-x) - 1px), var(--border) calc(100% - var(--grid-line-x) - 1px), var(--border) calc(100% - var(--grid-line-x)), transparent calc(100% - var(--grid-line-x))),
+        linear-gradient(to bottom, transparent var(--grid-line-y), var(--border) var(--grid-line-y), var(--border) calc(var(--grid-line-y) + 1px), transparent calc(var(--grid-line-y) + 1px)),
+        linear-gradient(to bottom, transparent calc(100% - var(--grid-line-y) - 1px), var(--border) calc(100% - var(--grid-line-y) - 1px), var(--border) calc(100% - var(--grid-line-y)), transparent calc(100% - var(--grid-line-y)));
+    opacity: 0.45;
+}
