@@ -21,7 +21,8 @@ type SplitLayoutProps = {
 export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel, centerShowcase }: SplitLayoutProps) {
   return (
     <main className="relative z-[1] flex min-h-screen bg-background md:h-screen md:overflow-hidden">
-      <section className="left-panel-grid relative flex min-h-screen w-full flex-col overflow-hidden bg-background px-5 py-8 sm:px-8 md:h-full md:w-100 md:shrink-0 md:overflow-y-auto md:py-10" aria-label={panelLabel}>
+      <section className="relative flex min-h-screen w-full flex-col overflow-hidden bg-background px-5 py-8 sm:px-8 md:h-full md:w-100 md:shrink-0 md:overflow-y-auto md:py-10" aria-label={panelLabel}>
+        <div className="grid-rules pointer-events-none fixed inset-y-0 left-0 z-0 w-full md:w-100" aria-hidden="true" />
         <div className="relative flex flex-1 flex-col">
           <div>
             <Link className="mb-5 flex items-center gap-2.5 md:hidden" to="/" aria-label="Xocket home">
@@ -58,7 +59,8 @@ export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel, center
         }`}
         aria-label={showcaseLabel}
       >
-        <div className={centerShowcase ? 'flex min-h-full flex-col justify-center' : undefined}>{showcase}</div>
+        <div className="grid-rules pointer-events-none fixed inset-y-0 right-0 z-[1] hidden w-[calc(100%-25rem)] md:block" aria-hidden="true" />
+        <div className={centerShowcase ? 'relative flex min-h-full flex-col justify-center' : 'relative'}>{showcase}</div>
       </section>
     </main>
   )
