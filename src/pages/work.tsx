@@ -20,9 +20,9 @@ export default function Work() {
   }, [])
 
   return (
-    <main className="relative z-[1] min-h-screen bg-background px-5 py-8 sm:px-8 md:py-10">
-      <div className="mx-auto w-full max-w-[100rem]">
-        <header className="flex items-center justify-between gap-4">
+    <main className="relative z-[1] min-h-screen bg-background px-2 py-8 md:py-10">
+      <div className="w-full">
+        <header className="flex items-center justify-between gap-4 px-3">
           <Link className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" to="/">
             <ArrowLeft className="size-4" aria-hidden="true" />
             Home
@@ -33,7 +33,7 @@ export default function Work() {
           </Link>
         </header>
 
-        <div className="py-16 text-center sm:py-24">
+        <div className="px-3 py-16 text-center sm:py-24">
           <h1 className="text-4xl leading-none font-bold tracking-tighter text-balance text-foreground uppercase sm:text-6xl lg:text-7xl">
             World class <span className="block text-muted-foreground">product engineering</span>
           </h1>
@@ -42,34 +42,33 @@ export default function Work() {
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-2">
+        {/* Masonry wall: tiles vary in height so it reads as a gallery, not a list */}
+        <div className="columns-2 gap-2 md:columns-3 [column-fill:_balance]">
           {shots.map(({ image, product, key }) => (
             <Link
-              className="group block border border-border/80 bg-card transition-colors hover:border-foreground/25"
+              className="group relative mb-2 block break-inside-avoid overflow-hidden bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
               key={key}
               to={`/work/${product.slug}`}
               aria-label={`Open ${product.name}`}
             >
-              <div className="aspect-[16/10] overflow-hidden">
-                <img
-                  className="block size-full object-cover object-top transition-transform duration-500 group-hover:scale-[1.02]"
-                  src={image}
-                  alt={`${product.name} preview`}
-                  loading="lazy"
-                  decoding="async"
-                />
-              </div>
-              <div className="flex items-center gap-3 border-t border-border/80 px-4 py-3">
-                <span className="size-2 shrink-0 rounded-full bg-foreground" aria-hidden="true" />
-                <span className="text-sm leading-5 font-semibold text-foreground">{product.name}</span>
-                <span className="truncate text-xs leading-5 text-muted-foreground">{product.type}</span>
-                <ArrowUpRight className="ml-auto size-4 shrink-0 text-muted-foreground transition-[color,translate] group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-foreground" aria-hidden="true" />
+              <img
+                className="block h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]"
+                src={image}
+                alt={`${product.name} preview`}
+                loading="lazy"
+                decoding="async"
+              />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-t from-black/80 to-transparent px-3 pt-8 pb-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                <span className="size-1.5 shrink-0 rounded-full bg-white" aria-hidden="true" />
+                <span className="truncate text-xs leading-5 font-medium text-white">
+                  {product.name} <span className="text-white/60">{product.type}</span>
+                </span>
               </div>
             </Link>
           ))}
         </div>
 
-        <section className="mt-16 border-t border-border/80 py-12 text-center sm:mt-24">
+        <section className="mt-16 border-t border-border/80 px-3 py-12 text-center sm:mt-24">
           <h2 className="text-2xl leading-8 font-bold tracking-tight text-foreground sm:text-3xl">
             Have a complex product to build?
           </h2>
