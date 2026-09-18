@@ -3,6 +3,14 @@ import { Mail } from "lucide-react"
 import type { ReactNode } from "react"
 import { Link } from "react-router-dom"
 
+const siteLinks = [
+  { label: 'Work', to: '/work' },
+  { label: 'About', to: '/about' },
+  { label: 'Contact', to: '/contact' },
+  { label: 'API docs', to: '/docs' },
+  { label: 'Privacy', to: '/privacy' },
+]
+
 function XocketMark({ className }: { className?: string }) {
   return <img className={className} src="/favicon.svg" alt="" aria-hidden="true" />
 }
@@ -36,7 +44,24 @@ export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel, center
             </div>
           </div>
         </div>
-        <div className="relative flex shrink-0 flex-col items-start gap-4 pt-10 sm:flex-row sm:items-center sm:justify-between sm:gap-0 md:pt-6">
+        <nav className="relative flex flex-wrap items-center gap-x-5 gap-y-2 pt-10 md:pt-8" aria-label="Site">
+          {siteLinks.map((link) => (
+            <Link
+              className="font-mono text-[11px] leading-4 tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
+              key={link.to}
+              to={link.to}
+            >
+              {link.label}
+            </Link>
+          ))}
+          <a
+            className="font-mono text-[11px] leading-4 tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
+            href="/llms.txt"
+          >
+            llms.txt
+          </a>
+        </nav>
+        <div className="relative flex shrink-0 flex-col items-start gap-4 pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-0">
           <Link className="flex items-center gap-3" to="/" aria-label="Xocket home">
             <XocketMark className="size-7" />
             <span className="text-lg leading-6 font-bold text-foreground">Xocket</span>

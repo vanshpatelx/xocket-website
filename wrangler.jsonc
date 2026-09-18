@@ -1,0 +1,22 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "xocket",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-09-17",
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // The Worker decides first so it can answer Markdown requests and return real 404s.
+    "run_worker_first": true,
+    "not_found_handling": "none"
+  },
+  "routes": [
+    {
+      "pattern": "dev.xocket.sh",
+      "custom_domain": true
+    }
+  ],
+  "observability": {
+    "enabled": true
+  }
+}

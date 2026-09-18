@@ -1,0 +1,291 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Xocket public API",
+    "version": "1.0.0",
+    "summary": "Read-only JSON API describing the Xocket product engineering studio and its case studies.",
+    "description": "A small public API so agents and scripts can read Xocket's case studies and studio facts without scraping HTML. No authentication is required. Every page of the website also answers in Markdown when the request carries `Accept: text/markdown`.",
+    "contact": {
+      "name": "Xocket",
+      "email": "hello@xocket.studio",
+      "url": "https://dev.xocket.sh/contact"
+    },
+    "license": {
+      "name": "Content is provided for reference",
+      "url": "https://dev.xocket.sh/privacy"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://dev.xocket.sh",
+      "description": "Development deployment of the Xocket website"
+    }
+  ],
+  "tags": [
+    { "name": "studio", "description": "Facts about the studio itself" },
+    { "name": "products", "description": "Case studies of products Xocket has built" }
+  ],
+  "paths": {
+    "/api/studio": {
+      "get": {
+        "operationId": "getStudio",
+        "summary": "Get studio profile",
+        "description": "Returns what Xocket does, the services offered, contact addresses and the canonical URLs of the machine-readable files.",
+        "tags": ["studio"],
+        "responses": {
+          "200": {
+            "description": "The studio profile.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Studio" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/products": {
+      "get": {
+        "operationId": "listProducts",
+        "summary": "List case studies",
+        "description": "Lists every published case study, optionally narrowed to a single product type such as Dashboard or Mobile App.",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "required": false,
+            "description": "Product type to filter by, matching the types shown on the work gallery. Case-insensitive.",
+            "schema": { "type": "string", "examples": ["Dashboard", "Mobile App", "AI Assistant"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Matching case studies.",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/ProductList" }
+              }
+            }
+          },
+          "404": {
+            "description": "No products carry the requested type.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          }
+        }
+      }
+    },
+    "/api/products/{slug}": {
+      "get": {
+        "operationId": "getProduct",
+        "summary": "Get one case study",
+        "description": "Returns a single case study in full, including the challenge, how the product was structured, what was built, the outcome and the tech stack.",
+        "tags": ["products"],
+        "parameters": [
+          {
+            "name": "slug",
+            "in": "path",
+            "required": true,
+            "description": "Identifier of the case study, as returned by listProducts.",
+            "schema": { "type": "string", "examples": ["medesk", "bionis"] }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The case study.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/ProductDetail" } }
+            }
+          },
+          "404": {
+            "description": "No case study exists with that slug.",
+            "content": {
+              "application/json": { "schema": { "$ref": "#/components/schemas/Error" } }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "description": "Every error response uses this shape. The code is stable and safe to branch on.",
+        "required": ["error"],
+        "properties": {
+          "error": {
+            "type": "object",
+            "required": ["code", "message", "hint", "status"],
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Stable machine-readable error code.",
+                "examples": ["not_found", "unknown_type", "unknown_endpoint", "method_not_allowed"]
+              },
+              "message": { "type": "string", "description": "Human-readable description of what went wrong." },
+              "hint": { "type": "string", "description": "What to do next to get a successful response." },
+              "status": { "type": "integer", "description": "HTTP status code, repeated for clients that only read the body." }
+            }
+          }
+        }
+      },
+      "Studio": {
+        "type": "object",
+        "required": ["name", "url", "description", "services", "contact", "resources"],
+        "properties": {
+          "name": { "type": "string", "description": "Studio name." },
+          "url": { "type": "string", "format": "uri", "description": "Canonical website URL." },
+          "description": { "type": "string", "description": "What the studio does, in one paragraph." },
+          "services": {
+            "type": "array",
+            "description": "The shapes an engagement can take.",
+            "items": {
+              "type": "object",
+              "required": ["name", "summary"],
+              "properties": {
+                "name": { "type": "string", "description": "Service name." },
+                "summary": { "type": "string", "description": "What the service covers." }
+              }
+            }
+          },
+          "contact": {
+            "type": "object",
+            "description": "Email addresses for reaching the studio.",
+            "required": ["sales", "support"],
+            "properties": {
+              "sales": { "type": "string", "format": "email", "description": "New projects and commercial questions." },
+              "support": { "type": "string", "format": "email", "description": "Work already under way." }
+            }
+          },
+          "resources": {
+            "type": "object",
+            "description": "Canonical URLs of the machine-readable files.",
+            "required": ["openapi", "llmsTxt", "sitemap", "docs", "products"],
+            "properties": {
+              "openapi": { "type": "string", "format": "uri", "description": "This schema." },
+              "llmsTxt": { "type": "string", "format": "uri", "description": "Agent guidance file." },
+              "sitemap": { "type": "string", "format": "uri", "description": "XML sitemap." },
+              "docs": { "type": "string", "format": "uri", "description": "Human-readable API docs." },
+              "products": { "type": "string", "format": "uri", "description": "Case study list endpoint." }
+            }
+          }
+        }
+      },
+      "Product": {
+        "type": "object",
+        "description": "Summary of one case study.",
+        "required": ["slug", "name", "type", "industry", "year", "stack", "services", "summary", "url"],
+        "properties": {
+          "slug": { "type": "string", "description": "Identifier used in URLs." },
+          "name": { "type": "string", "description": "Product name." },
+          "type": { "type": "string", "description": "Kind of product, such as Dashboard or Mobile App." },
+          "industry": { "type": "string", "description": "Industry the product serves." },
+          "year": { "type": "string", "description": "Year of the engagement." },
+          "client": { "type": "string", "description": "Client the product was built for." },
+          "stage": { "type": "string", "description": "Product stage during the engagement, such as MVP or Production." },
+          "engagement": { "type": "string", "description": "Length and shape of the engagement." },
+          "results": { "type": ["string", "null"], "description": "Headline outcome, when one is published." },
+          "website": { "type": ["string", "null"], "format": "uri", "description": "Live product URL, when public." },
+          "stack": { "type": "array", "items": { "type": "string" }, "description": "Technologies used." },
+          "services": { "type": "array", "items": { "type": "string" }, "description": "Services Xocket provided." },
+          "summary": { "type": "string", "description": "One-paragraph description of the product." },
+          "url": { "type": "string", "format": "uri", "description": "Case study page." },
+          "markdownUrl": { "type": "string", "format": "uri", "description": "Markdown version of the case study page." }
+        }
+      },
+      "ProductList": {
+        "type": "object",
+        "required": ["count", "types", "products"],
+        "properties": {
+          "count": { "type": "integer", "description": "Number of case studies returned." },
+          "type": { "type": ["string", "null"], "description": "The type filter that was applied, if any." },
+          "types": { "type": "array", "items": { "type": "string" }, "description": "Every type available across all case studies." },
+          "products": { "type": "array", "items": { "$ref": "#/components/schemas/Product" }, "description": "The matching case studies." }
+        }
+      },
+      "ProductDetail": {
+        "allOf": [
+          { "$ref": "#/components/schemas/Product" },
+          {
+            "type": "object",
+            "properties": {
+              "description": { "type": "array", "items": { "type": "string" }, "description": "Intro paragraphs." },
+              "images": { "type": "array", "items": { "type": "string", "format": "uri" }, "description": "Screenshot URLs." },
+              "caseStudy": {
+                "type": ["object", "null"],
+                "description": "The written case study: challenge, approach, features, outcome and testimonial. Sections are omitted when not published.",
+                "properties": {
+                  "challenge": {
+                    "type": "object",
+                    "properties": {
+                      "intro": { "type": "string", "description": "The problem in one paragraph." },
+                      "points": { "type": "array", "items": { "type": "string" }, "description": "Specific questions or constraints." },
+                      "closing": { "type": "string", "description": "Closing framing of the problem." }
+                    }
+                  },
+                  "approach": {
+                    "type": "object",
+                    "properties": {
+                      "intro": { "type": "string", "description": "How the product was organised." },
+                      "steps": {
+                        "type": "array",
+                        "description": "The stages the product was structured around.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "title": { "type": "string", "description": "Stage name." },
+                            "description": { "type": "string", "description": "What happens in that stage." }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "features": {
+                    "type": "array",
+                    "description": "What was built.",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "title": { "type": "string", "description": "Feature name." },
+                        "description": { "type": "string", "description": "What the feature does." }
+                      }
+                    }
+                  },
+                  "outcome": {
+                    "type": "object",
+                    "properties": {
+                      "intro": { "type": "string", "description": "Outcome summary." },
+                      "metrics": {
+                        "type": "array",
+                        "description": "Headline numbers.",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "value": { "type": "string", "description": "The number or figure." },
+                            "label": { "type": "string", "description": "What the figure measures." }
+                          }
+                        }
+                      },
+                      "points": { "type": "array", "items": { "type": "string" }, "description": "What the client was left with." }
+                    }
+                  },
+                  "testimonial": {
+                    "type": "object",
+                    "properties": {
+                      "quote": { "type": "string", "description": "Client quote." },
+                      "name": { "type": "string", "description": "Who said it." },
+                      "role": { "type": "string", "description": "Their role and company." }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

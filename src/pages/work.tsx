@@ -52,8 +52,15 @@ export default function Work() {
           <h1 className="text-4xl leading-none font-bold tracking-tighter text-balance text-foreground uppercase sm:text-6xl lg:text-7xl">
             World class <span className="block text-muted-foreground">product engineering</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-xl text-base leading-6 font-medium text-muted-foreground">
-            Products we have designed and shipped end to end, from first prototype to production.
+          <p className="mx-auto mt-6 max-w-2xl text-base leading-6 font-medium text-muted-foreground">
+            Products we have designed and shipped end to end, from first prototype to production. Each one covers the
+            full arc of an engagement: product strategy, interface design, full-stack and AI engineering, and the
+            launch work that follows.
+          </p>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
+            The work spans healthcare operations, consumer health, analytics and internal tooling, built with React,
+            TypeScript, Node.js, Python, Go and retrieval-based AI. Filter by product type below, or open any piece to
+            read the full case study: the problem, how the product was structured, what we built and what came of it.
           </p>
         </div>
 
@@ -108,6 +115,24 @@ export default function Work() {
             <ArrowUpRight className="size-4" aria-hidden="true" />
           </a>
         </section>
+
+        <nav className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border/80 py-8" aria-label="Site">
+          {[
+            { label: 'Home', to: '/' },
+            { label: 'About', to: '/about' },
+            { label: 'Contact', to: '/contact' },
+            { label: 'API docs', to: '/docs' },
+            { label: 'Privacy', to: '/privacy' },
+          ].map((link) => (
+            <Link
+              className="font-mono text-xs leading-4 tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
+              key={link.to}
+              to={link.to}
+            >
+              {link.label}
+            </Link>
+          ))}
+        </nav>
       </div>
     </main>
   )

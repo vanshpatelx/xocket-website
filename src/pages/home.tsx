@@ -84,7 +84,9 @@ const shipped = [
 ]
 
 function useCountUp(target: number, duration = 1400) {
-  const [reducedMotion] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches)
+  const [reducedMotion] = useState(
+    () => typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  )
   const [count, setCount] = useState(reducedMotion ? target : 0)
 
   useEffect(() => {

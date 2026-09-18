@@ -25,3 +25,7 @@ dist-ssr
 
 # Firebase
 .firebase
+
+# Build output
+dist-ssr
+.wrangler
