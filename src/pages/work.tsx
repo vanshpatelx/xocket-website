@@ -57,16 +57,16 @@ export default function Work() {
           </p>
         </div>
 
-        <div className="flex flex-wrap items-center gap-2 border-b border-border/80 py-6">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 border-b border-border/80 pt-6">
           {filters.map((filter) => {
             const count = filter === 'All' ? shots.length : shots.filter(({ product }) => product.type === filter).length
             const isActive = filter === activeFilter
             return (
               <button
-                className={`inline-flex items-center gap-2 border px-3 py-1.5 text-xs leading-5 font-medium transition-colors ${
+                className={`-mb-px border-b pb-3 text-sm leading-5 font-medium transition-colors ${
                   isActive
-                    ? 'border-foreground bg-foreground text-background'
-                    : 'border-border bg-card text-muted-foreground hover:border-foreground/40 hover:text-foreground'
+                    ? 'border-foreground text-foreground'
+                    : 'border-transparent text-muted-foreground hover:text-foreground'
                 }`}
                 key={filter}
                 type="button"
@@ -74,14 +74,14 @@ export default function Work() {
                 aria-pressed={isActive}
               >
                 {filter}
-                <span className={isActive ? 'text-background/60' : 'text-muted-foreground/60'}>{count}</span>
+                <span className="ml-1.5 align-super text-[10px] text-muted-foreground/70">{count}</span>
               </button>
             )
           })}
         </div>
 
         {/* Masonry wall: tiles vary in height so it reads as a gallery, not a list */}
-        <div className="columns-2 gap-2 md:columns-3 [column-fill:_balance]">
+        <div className="columns-2 gap-4 py-8 md:columns-3 [column-fill:_balance]">
           {visible.map(({ image, product, key }) => (
             <Link
               className="group relative mb-4 block break-inside-avoid overflow-hidden border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
