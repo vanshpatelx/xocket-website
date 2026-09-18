@@ -205,16 +205,18 @@ export default function Product() {
       key={product.slug}
       panelLabel={`${product.name} case study`}
       panel={<CaseStudyPanel product={product} next={next} />}
+      centerShowcase
       showcaseLabel={`${product.name} screenshots`}
       showcase={
         <div className="grid gap-4">
           {[product.image, ...(product.gallery ?? [])].map((image, imageIndex) => (
-            <img
-              className="block h-auto w-full rounded-none"
-              key={`${image}-${imageIndex}`}
-              src={image}
-              alt={`${product.name} screen ${imageIndex + 1}`}
-            />
+            <div className="border border-border/80" key={`${image}-${imageIndex}`}>
+              <img
+                className="block h-auto w-full rounded-none"
+                src={image}
+                alt={`${product.name} screen ${imageIndex + 1}`}
+              />
+            </div>
           ))}
         </div>
       }
