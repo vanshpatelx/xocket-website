@@ -28,32 +28,53 @@ function ProductShowcase() {
           to={`/work/${product.slug}`}
           aria-label={`Open ${product.name}`}
         >
-          <img
-            className="block h-auto w-full rounded-none transition-transform duration-500 group-hover:scale-[1.01]"
-            src={product.image}
-            alt={`${product.name} preview`}
-          />
-          <div className="flex flex-col gap-3 border-t border-border/80 bg-card px-4 py-3 sm:absolute sm:inset-x-5 sm:bottom-3 sm:flex-row sm:items-center sm:justify-between sm:gap-6 sm:border sm:bg-background/85 sm:py-2.5 sm:backdrop-blur-md">
-            <div className="flex min-w-0 items-center gap-3 sm:shrink-0">
-              <span className="shrink-0 text-sm leading-5 font-bold text-foreground">{product.name}</span>
-              <span className="truncate text-xs leading-5 font-medium text-muted-foreground">{product.category}</span>
-              <span className="inline-flex shrink-0 items-center gap-1 text-xs leading-5 font-medium text-foreground/80 transition-colors group-hover:text-foreground">
-                Open
-                <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+          {/* Phones crop into the top-left of the screenshot so the UI stays readable */}
+          <div className="aspect-[4/3] overflow-hidden sm:aspect-auto">
+            <img
+              className="block h-auto w-[180%] max-w-none rounded-none transition-transform duration-500 sm:w-full sm:group-hover:scale-[1.01]"
+              src={product.image}
+              alt={`${product.name} preview`}
+            />
+          </div>
+          {/* Mobile: plain text, no boxes */}
+          <div className="flex items-start justify-between gap-4 border-t border-border/80 px-4 py-3 sm:hidden">
+            <div className="min-w-0">
+              <div className="text-sm leading-5 font-semibold text-foreground">{product.name}</div>
+              <div className="mt-1 text-xs leading-5 text-muted-foreground">
+                {[product.category, product.type, ...product.stack].join(' · ')}
+              </div>
+            </div>
+            <span className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-xs leading-5 font-medium text-foreground">
+              Open
+              <ArrowUpRight className="size-3.5" aria-hidden="true" />
+            </span>
+          </div>
+
+          {/* Desktop: each label its own tag, inside the image */}
+          <div className="absolute inset-x-5 bottom-3 hidden flex-wrap items-center gap-1.5 sm:flex">
+            <span className="border border-foreground/25 bg-background/85 px-2.5 py-1 text-xs leading-5 font-semibold text-foreground backdrop-blur-md">
+              {product.name}
+            </span>
+            <span className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md">
+              {product.category}
+            </span>
+            <span className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md">
+              {product.type}
+            </span>
+            {product.stack.map((tech, techIndex) => (
+              <span
+                className={`border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md ${
+                  techIndex >= 2 ? 'hidden xl:inline-block' : ''
+                }`}
+                key={tech}
+              >
+                {tech}
               </span>
-            </div>
-            <div className="flex min-w-0 flex-wrap gap-1.5 sm:flex-nowrap sm:overflow-hidden">
-              {[product.type, ...product.stack].map((tag, tagIndex) => (
-                <span
-                  className={`shrink-0 border px-2 py-0.5 text-[11px] leading-4 font-medium ${
-                    tagIndex === 0 ? 'border-foreground/25 bg-foreground/10 text-foreground' : 'border-border bg-card/80 text-muted-foreground'
-                  } ${tagIndex >= 3 ? 'sm:hidden xl:inline-block' : ''}`}
-                  key={tag}
-                >
-                  {tag}
-                </span>
-              ))}
-            </div>
+            ))}
+            <span className="ml-auto inline-flex items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md transition-colors group-hover:border-foreground/40">
+              Open
+              <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
+            </span>
           </div>
         </Link>
       ))}
