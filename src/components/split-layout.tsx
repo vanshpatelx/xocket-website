@@ -19,7 +19,7 @@ type SplitLayoutProps = {
 export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel }: SplitLayoutProps) {
   return (
     <main className="relative z-[1] flex min-h-screen bg-background md:h-screen md:overflow-hidden">
-      <section className="left-panel-grid relative flex min-h-screen w-full flex-col overflow-hidden bg-background px-5 py-8 sm:px-8 md:h-full md:w-120 md:shrink-0 md:overflow-y-auto md:py-10" aria-label={panelLabel}>
+      <section className="left-panel-grid relative flex min-h-screen w-full flex-col overflow-hidden bg-background px-5 py-8 sm:px-8 md:h-full md:w-100 md:shrink-0 md:overflow-y-auto md:py-10" aria-label={panelLabel}>
         <div className="relative flex flex-1 flex-col">
           <div>
             <Link className="mb-5 flex items-center gap-2.5 md:hidden" to="/" aria-label="Xocket home">

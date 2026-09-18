@@ -12,15 +12,10 @@ const stats = [
   { value: '100%', label: 'Senior engineers' },
 ]
 
-function scrollToVisible(anchor: string) {
-  const target = Array.from(document.querySelectorAll<HTMLElement>(`[data-anchor="${anchor}"]`))
-    .find((el) => el.offsetParent !== null)
-  target?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-}
 
 function ProductShowcase() {
   return (
-    <div className="grid gap-4" data-anchor="work">
+    <div className="grid gap-4">
       {products.map((product) => (
         <Link
           className="group relative block overflow-hidden rounded-none border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
@@ -171,9 +166,9 @@ export default function Home() {
             Xocket is an AI-native product engineering studio. Senior engineers take your product end to end, from strategy and design to AI-powered engineering and launch, with a working prototype in five days.
           </p>
           <div className="mt-8 flex gap-2">
-            <button className={buttonVariants({ variant: 'secondary' })} type="button" onClick={() => scrollToVisible('work')}>
+            <Link className={buttonVariants({ variant: 'secondary' })} to="/work">
               View work
-            </button>
+            </Link>
             <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent("Let's talk")}`}>
               Book a call
               <svg
