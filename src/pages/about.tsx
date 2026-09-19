@@ -1,4 +1,5 @@
 import { Section, TextPage } from "@/components/text-page"
+import { backersLine, sectors, services, stats } from "@/data/studio"
 import { CONTACT_EMAIL } from "@/lib/site"
 import { Link } from "react-router-dom"
 
@@ -18,9 +19,41 @@ export default function About() {
           need to be dependable rather than impressive in a demo.
         </p>
         <p>
-          We work in three ways. The product studio takes an idea to a production-grade first release. The engineering
-          lab takes on hard, specific systems inside a product that already exists. And we place senior engineers
-          directly inside a client team for longer stretches of work.
+          We work in four ways, listed below. Three of them build new products; the fourth takes an established company
+          that already runs on people and spreadsheets and automates the repetitive parts of how it works.
+        </p>
+        <div className="space-y-5 border-y border-border/80 py-5">
+          {services.map((service) => (
+            <div key={service.name}>
+              <h3 className="text-sm leading-6 font-medium text-foreground">{service.name}</h3>
+              <p className="mt-1">{service.summary}</p>
+              {service.steps && (
+                <ol className="mt-3 space-y-2">
+                  {service.steps.map((step, index) => (
+                    <li key={step.title}>
+                      <span className="font-mono text-xs tracking-wide text-muted-foreground uppercase">
+                        {index + 1}. {step.title}
+                      </span>{' '}
+                      <span className="text-foreground/90">{step.description}</span>
+                    </li>
+                  ))}
+                </ol>
+              )}
+            </div>
+          ))}
+        </div>
+      </Section>
+
+      <Section heading="By the numbers">
+        <p>
+          {backersLine}. Across the products we have built, clients have raised{' '}
+          <strong className="font-medium text-foreground">{stats[0].value.replace('+', '')} or more</strong> and reached
+          a combined valuation of <strong className="font-medium text-foreground">{stats[1].value}</strong>.
+        </p>
+        <p>
+          The work spans {sectors.slice(0, -1).join(', ')} and {sectors[sectors.length - 1]},
+          which keeps us close to the parts of each field that are actually shipping rather than the parts that are
+          being announced.
         </p>
       </Section>
 

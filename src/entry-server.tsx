@@ -3,6 +3,7 @@ import { StrictMode } from 'react'
 import { renderToString } from 'react-dom/server'
 import { AppRoutes } from './App'
 import { products } from './data/products'
+import { backers, backersLine, sectors, services, stats } from './data/studio'
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SUPPORT_EMAIL } from './lib/site'
 
 export type RouteMeta = {
@@ -88,4 +89,5 @@ export function render(url: string) {
 }
 
 export { products }
+export const studio = { backers, backersLine, sectors, services, stats }
 export const siteConstants = { SITE_URL, SITE_NAME, SITE_DESCRIPTION, CONTACT_EMAIL, SUPPORT_EMAIL }

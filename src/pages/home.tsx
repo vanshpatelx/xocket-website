@@ -5,12 +5,7 @@ import { ArrowUpRight } from "lucide-react"
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
 import { products } from "@/data/products"
-
-const stats = [
-  { value: '50+', label: 'Products built' },
-  { value: '5d', label: 'To first prototype' },
-  { value: '100%', label: 'Senior engineers' },
-]
+import { backersLine, sectors, stats } from "@/data/studio"
 
 
 function ProductShowcase() {
@@ -140,12 +135,20 @@ function Stats() {
       <div className="text-xs leading-4 font-semibold tracking-widest text-muted-foreground uppercase">
         By the numbers
       </div>
-      <div className="mt-4 grid grid-cols-3 divide-x divide-border/80 overflow-hidden border border-border/80">
+      <div className="mt-4 grid grid-cols-2 divide-x divide-y divide-border/80 overflow-hidden border border-border/80">
         {stats.map((stat) => (
           <div className="flex h-20 flex-col items-center justify-center px-2 text-center" key={stat.label}>
             <div className="text-xl leading-7 font-bold text-foreground">{stat.value}</div>
             <div className="text-[11px] leading-4 font-medium text-muted-foreground">{stat.label}</div>
           </div>
+        ))}
+      </div>
+      <p className="mt-4 text-xs leading-5 text-muted-foreground">{backersLine}.</p>
+      <div className="mt-4 flex flex-wrap gap-x-4 gap-y-1">
+        {sectors.map((sector) => (
+          <span className="font-mono text-[11px] leading-4 tracking-wide text-muted-foreground uppercase" key={sector}>
+            {sector}
+          </span>
         ))}
       </div>
     </div>

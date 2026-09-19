@@ -6,6 +6,7 @@
  * rather than opening an SSE stream, which the transport allows.
  */
 import { products } from '../src/data/products'
+import { backers, sectors, services, stats } from '../src/data/studio'
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../src/lib/site'
 
 export const MCP_PROTOCOL_VERSION = '2025-06-18'
@@ -66,11 +67,14 @@ const studioProfile = {
   name: SITE_NAME,
   url: SITE_URL,
   description: SITE_DESCRIPTION,
-  services: [
-    { name: 'AI Product Studio', summary: 'Idea to production-grade first release in weeks, not months.' },
-    { name: 'AI Engineering Lab', summary: 'Complex, data-heavy systems and AI automation inside existing products.' },
-    { name: 'Dedicated AI Engineers', summary: 'Senior engineers embedded in your team, from around $50/hour.' },
-  ],
+  stats: stats.map((stat) => `${stat.value} ${stat.label.toLowerCase()}`),
+  backers,
+  sectors,
+  services: services.map((service) => ({
+    name: service.name,
+    summary: service.summary,
+    ...(service.steps ? { process: service.steps.map((step) => `${step.title}: ${step.description}`) } : {}),
+  })),
   contact: { sales: CONTACT_EMAIL, support: SUPPORT_EMAIL },
   resources: { docs: `${SITE_URL}/docs`, openapi: `${SITE_URL}/openapi.json`, llmsTxt: `${SITE_URL}/llms.txt` },
 }
