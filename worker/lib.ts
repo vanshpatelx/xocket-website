@@ -1,5 +1,6 @@
 /** Pure helpers behind the Worker, kept separate so they can be unit tested. */
 import { products, type Product } from '../src/data/products'
+import { backers, sectors, services, stats } from '../src/data/studio'
 import { CONTACT_EMAIL, SITE_DESCRIPTION, SITE_NAME, SITE_URL, SUPPORT_EMAIL } from '../src/lib/site'
 
 export type AcceptEntry = { type: string; q: number }
@@ -170,20 +171,14 @@ const studio = {
   name: SITE_NAME,
   url: SITE_URL,
   description: SITE_DESCRIPTION,
-  services: [
-    {
-      name: 'AI Product Studio',
-      summary: 'Idea to production-grade first release: strategy, design, full-stack and AI engineering, launch.',
-    },
-    {
-      name: 'AI Engineering Lab',
-      summary: 'Hard systems inside an existing product: data-heavy platforms, AI automation, performance work.',
-    },
-    {
-      name: 'Dedicated AI Engineers',
-      summary: 'Senior engineers embedded in your team, starting around $50/hour.',
-    },
-  ],
+  stats: stats.map((stat) => ({ value: stat.value, label: stat.label })),
+  backers,
+  sectors,
+  services: services.map((service) => ({
+    name: service.name,
+    summary: service.summary,
+    ...(service.steps ? { process: service.steps } : {}),
+  })),
   contact: { sales: CONTACT_EMAIL, support: SUPPORT_EMAIL },
   resources: {
     openapi: `${SITE_URL}/openapi.json`,
