@@ -3,13 +3,13 @@
 // emits sitemap.xml, robots.txt and llms.txt.
 import { mkdir, readFile, writeFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { parse } from 'node-html-parser'
 
 const root = dirname(dirname(fileURLToPath(import.meta.url)))
 const dist = join(root, 'dist')
 
-const bundle = await import(join(root, 'dist-ssr/entry-server.js'))
+const bundle = await import(pathToFileURL(join(root, 'dist-ssr/entry-server.js')).href)
 const { render, routes, products, siteConstants, studio } = bundle
 const { SITE_URL, SITE_NAME, SITE_DESCRIPTION, CONTACT_EMAIL, SUPPORT_EMAIL } = siteConstants
 

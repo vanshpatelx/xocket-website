@@ -35,6 +35,8 @@ export type Product = {
   category: string
   /** What kind of product it is, shown as the first chip (e.g. Dashboard, Mobile App) */
   type: string
+  /** 2-3 concise highlight badges shown alongside product name */
+  badges: string[]
   /** Short intro paragraphs at the top of the product page */
   intro: string[]
   image: string
@@ -61,6 +63,7 @@ export const products: Product[] = [
     name: 'Medesk',
     category: 'Healthcare SaaS',
     type: 'Dashboard',
+    badges: ['Healthcare SaaS', 'Dashboard', 'OpenAI'],
     intro: [
       'Medesk is a hospital operations platform that gives care teams one live view of appointments, wait times, bed occupancy and staff performance.',
       'We partnered with the founding team from first prototype to production, designing and engineering the core dashboard and an AI assistant that answers questions across operational data.',
@@ -127,6 +130,7 @@ export const products: Product[] = [
     name: 'Bionis',
     category: 'Health & Wellness',
     type: 'Dashboard',
+    badges: ['Health & Wellness', 'Dashboard', 'LLM Agents'],
     intro: [
       'Bionis turns sleep, activity and recovery signals into a single daily wellness score, with AI insights that explain what changed and what to do next.',
       'We designed and built the product end to end, from the scoring model to the dashboard experience.',
