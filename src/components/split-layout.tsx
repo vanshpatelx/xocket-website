@@ -8,27 +8,29 @@ type SplitLayoutProps = {
   /** Scrollable showcase on the right (stacked under the panel on mobile) */
   showcase: ReactNode
   showcaseLabel: string
-  centerShowcase?: boolean
 }
 
 export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel }: SplitLayoutProps) {
   return (
     <main className="relative z-[1] flex min-h-screen bg-background md:h-screen md:overflow-hidden">
-      <section className="isolate relative flex min-h-screen w-full flex-col overflow-hidden bg-background px-5 py-8 sm:px-8 md:h-full md:w-100 md:shrink-0 md:overflow-y-auto md:py-10" aria-label={panelLabel}>
-        <div className="grid-rules pointer-events-none fixed inset-y-0 left-0 z-0 w-full md:w-100" aria-hidden="true" />
+      <section
+        className="relative block min-h-screen w-full bg-background md:h-full md:w-100 md:shrink-0 md:overflow-y-auto"
+        aria-label={panelLabel}
+      >
+        <div className="left-panel-grid relative flex min-h-full w-full flex-col px-5 py-8 sm:px-8 md:py-10">
+          <div className="relative z-10 flex flex-1 flex-col">
+            <div>
+              <div className="stagger">{panel}</div>
 
-        <div className="relative z-10 flex flex-1 flex-col">
-          <div>
-            <div className="stagger">{panel}</div>
-
-            <div className="mt-12 md:hidden" aria-label={showcaseLabel}>
-              {showcase}
+              <div className="mt-12 md:hidden" aria-label={showcaseLabel}>
+                {showcase}
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="relative z-10 mt-auto">
-          <Footer />
+          <div className="relative z-10 mt-auto">
+            <Footer />
+          </div>
         </div>
       </section>
 

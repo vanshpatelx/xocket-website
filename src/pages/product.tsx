@@ -12,7 +12,7 @@ function displayUrl(url: string) {
 
 function Block({ label, children }: { label?: string; children: ReactNode }) {
   return (
-    <section className="border-t border-border/80 py-8">
+    <section className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4">
       {label && <h2 className="mb-5 font-mono text-xs leading-4 tracking-wide text-muted-foreground uppercase">{label}</h2>}
       <div className="space-y-4 text-sm leading-6 text-muted-foreground">{children}</div>
     </section>

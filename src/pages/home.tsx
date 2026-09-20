@@ -31,7 +31,7 @@ function ProductShowcase() {
           {/* Phones crop into the top-left of the screenshot so the UI stays readable */}
           <div className="aspect-[4/3] overflow-hidden sm:aspect-auto">
             <img
-              className="block h-auto w-[180%] max-w-none rounded-none transition-transform duration-500 sm:w-full sm:group-hover:scale-[1.01]"
+              className="block h-auto w-[180%] max-w-none rounded-none sm:w-full"
               src={product.image}
               alt={`${product.name} preview`}
             />
@@ -41,7 +41,7 @@ function ProductShowcase() {
             <div className="min-w-0">
               <div className="text-sm leading-5 font-semibold text-foreground">{product.name}</div>
               <div className="mt-1 text-xs leading-5 text-muted-foreground">
-                {[product.category, product.type, ...product.stack].join(' · ')}
+                {product.badges.join(' · ')}
               </div>
             </div>
             <span className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-xs leading-5 font-medium text-foreground">
@@ -50,28 +50,20 @@ function ProductShowcase() {
             </span>
           </div>
 
-          {/* Desktop: each label its own tag, inside the image */}
+          {/* Desktop: 3-4 clean badges inside the image */}
           <div className="absolute inset-x-5 bottom-3 hidden flex-wrap items-center gap-1.5 sm:flex">
             <span className="border border-foreground/25 bg-background/85 px-2.5 py-1 text-xs leading-5 font-semibold text-foreground backdrop-blur-md">
               {product.name}
             </span>
-            <span className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md">
-              {product.category}
-            </span>
-            <span className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md">
-              {product.type}
-            </span>
-            {product.stack.map((tech, techIndex) => (
+            {product.badges.map((badge) => (
               <span
-                className={`border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md ${
-                  techIndex >= 2 ? 'hidden xl:inline-block' : ''
-                }`}
-                key={tech}
+                className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md"
+                key={badge}
               >
-                {tech}
+                {badge}
               </span>
             ))}
-            <span className="ml-auto inline-flex items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md transition-colors group-hover:border-foreground/40">
+            <span className="ml-auto inline-flex items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md">
               Open
               <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
             </span>

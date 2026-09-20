@@ -185,6 +185,7 @@ export const products: Product[] = [
     name: 'Medesk Analytics',
     category: 'Healthcare Data',
     type: 'Analytics',
+    badges: ['Healthcare Data', 'Analytics', 'ClickHouse'],
     intro: [
       'An analytics module for Medesk that surfaces trends in appointment volume, no-shows and department load, with scheduled reports for hospital leadership.',
     ],
@@ -212,6 +213,7 @@ export const products: Product[] = [
     name: 'Bionis Coach',
     category: 'AI Assistant',
     type: 'AI Assistant',
+    badges: ['AI Assistant', 'RAG Pipeline', 'Claude API'],
     intro: [
       'A conversational AI coach that reads Bionis health data and goals to give personalised, context-aware guidance on sleep, training and recovery.',
     ],
@@ -242,6 +244,7 @@ export const products: Product[] = [
     name: 'Medesk Staff',
     category: 'Workforce Management',
     type: 'Web App',
+    badges: ['Workforce', 'Web App', 'Go & Redis'],
     intro: [
       'Shift scheduling, patient load balancing and performance tracking for doctors and nurses, integrated with the core Medesk platform.',
     ],
@@ -265,6 +268,7 @@ export const products: Product[] = [
     name: 'Bionis Sleep',
     category: 'Consumer Health',
     type: 'Mobile App',
+    badges: ['Consumer Health', 'Mobile App', 'React Native'],
     intro: [
       'A mobile app that detects sleep debt from wearable data and builds recovery plans, with nightly summaries and weekly trends.',
     ],
