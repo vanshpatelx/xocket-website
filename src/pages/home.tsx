@@ -36,15 +36,22 @@ function ProductShowcase() {
               alt={`${product.name} preview`}
             />
           </div>
-          {/* Mobile: plain text, no boxes */}
+          {/* Mobile: bottom section with title, badges as chips, and Open link */}
           <div className="flex items-start justify-between gap-4 border-t border-border/80 px-4 py-3 sm:hidden">
-            <div className="min-w-0">
+            <div className="min-w-0 flex-1">
               <div className="text-sm leading-5 font-semibold text-foreground">{product.name}</div>
-              <div className="mt-1 text-xs leading-5 text-muted-foreground">
-                {product.badges.join(' · ')}
+              <div className="mt-2 flex flex-wrap gap-1.5">
+                {product.badges.map((badge) => (
+                  <span
+                    className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md"
+                    key={badge}
+                  >
+                    {badge}
+                  </span>
+                ))}
               </div>
             </div>
-            <span className="inline-flex shrink-0 items-center gap-1 pt-0.5 text-xs leading-5 font-medium text-foreground">
+            <span className="inline-flex shrink-0 items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md">
               Open
               <ArrowUpRight className="size-3.5" aria-hidden="true" />
             </span>
