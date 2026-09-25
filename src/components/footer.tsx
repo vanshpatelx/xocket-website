@@ -1,4 +1,5 @@
 import { CONTACT_EMAIL } from "@/lib/site"
+import { cn } from "@/lib/utils"
 import { Mail } from "lucide-react"
 import { Link } from "react-router-dom"
 
@@ -29,69 +30,82 @@ const siteLinks = [
   { label: 'Contact', to: '/contact' },
 ]
 
-export function Footer({ className }: { className?: string }) {
+export function Footer({
+  className,
+  glowClassName,
+  hideGlow = false,
+}: {
+  className?: string
+  glowClassName?: string
+  hideGlow?: boolean
+}) {
   return (
-    <footer className={`relative z-10 flex shrink-0 flex-col gap-3.5 pt-10 md:pt-8 ${className ?? ''}`} aria-label="Footer">
+    <footer className={`relative z-10 flex shrink-0 flex-col gap-3.5 pt-14 sm:pt-16 ${className ?? ''}`} aria-label="Footer">
       {/* Brand gradient glow anchored at bottom-most place behind footer, balanced opacity */}
-      <div
-        className="pointer-events-none absolute -inset-x-5 -bottom-8 h-32 -z-10 overflow-hidden sm:-inset-x-8 md:-bottom-10"
-        style={{
-          WebkitMaskImage:
-            'linear-gradient(to top, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 100%)',
-          maskImage:
-            'linear-gradient(to top, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 100%)',
-        }}
-        aria-hidden="true"
-      >
+      {!hideGlow && (
         <div
-          className="absolute inset-x-0 bottom-0 h-full opacity-90 blur-3xl"
+          className={cn(
+            "pointer-events-none absolute h-32 -z-10 overflow-hidden",
+            glowClassName ?? "-inset-x-5 -bottom-8 sm:-inset-x-8 md:-bottom-10"
+          )}
           style={{
-            background:
-              'linear-gradient(90deg, #7a00ff 0%, #00bbff 20%, #00f5a0 42%, #ffe600 62%, #ff7a00 82%, #ff005d 100%)',
+            WebkitMaskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)',
+            maskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0) 100%)',
           }}
-        />
-      </div>
+          aria-hidden="true"
+        >
+          <div
+            className="absolute inset-x-0 -bottom-6 h-full opacity-90 blur-3xl"
+            style={{
+              background:
+                'linear-gradient(90deg, #7a00ff 0%, #00bbff 20%, #00f5a0 42%, #ffe600 62%, #ff7a00 82%, #ff005d 100%)',
+            }}
+          />
+        </div>
+      )}
       <div className="flex items-center justify-between">
-        <Link className="flex items-center gap-2.5" to="/" aria-label="Xocket home">
-          <img className="size-5" src="/logo.svg" alt="" aria-hidden="true" />
+        <Link className="flex items-center gap-2" to="/" aria-label="Xocket home">
+          <img className="size-4" src="/logo.svg" alt="" aria-hidden="true" />
           <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
         </Link>
         <div className="flex items-center gap-2" aria-label="Social and contact links">
           <a
-            className="inline-flex size-7 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex size-8 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
             href="https://x.com/xocket"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Xocket on X"
           >
-            <XIcon className="size-3.5" />
+            <XIcon className="size-4" />
           </a>
           <a
-            className="inline-flex size-7 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex size-8 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
             href="https://github.com/xocket"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Xocket on GitHub"
           >
-            <GithubIcon className="size-3.5" />
+            <GithubIcon className="size-4" />
           </a>
           <a
-            className="inline-flex size-7 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex size-8 items-center justify-center border border-border/80 bg-card text-muted-foreground transition-colors hover:text-foreground"
             href={`mailto:${CONTACT_EMAIL}`}
             aria-label="Email Xocket"
           >
-            <Mail className="size-3.5" aria-hidden="true" />
+            <Mail className="size-4" aria-hidden="true" />
           </a>
         </div>
       </div>
-      <div className="flex items-center justify-between">
-        <span className="font-mono text-[11px] leading-4 text-muted-foreground">
+      <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <span className="font-mono text-[13px] sm:text-sm leading-5 font-semibold text-muted-foreground">
           &copy; {new Date().getFullYear()} Xocket
         </span>
-        <nav className="flex items-center gap-3.5" aria-label="Site">
+        <nav className="flex items-center gap-3.5 sm:gap-4.5" aria-label="Site">
           {siteLinks.map((link) => (
             <Link
-              className="font-mono text-[11px] leading-4 tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
+              className="font-mono text-[13px] sm:text-sm leading-5 font-semibold tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
               key={link.to}
               to={link.to}
             >

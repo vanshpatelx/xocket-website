@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactNode } from "react"
 import { Footer } from "@/components/footer"
+import { cn } from "@/lib/utils"
 
 type SplitLayoutProps = {
   /** Content of the fixed left panel */
@@ -10,6 +11,9 @@ type SplitLayoutProps = {
   showcaseLabel: string
   /** Initial vertical scroll offset for the showcase panel */
   initialShowcaseScroll?: number
+  showcaseClassName?: string
+  /** Whether to suppress rendering the showcase at the bottom of the panel on mobile */
+  hideMobileShowcase?: boolean
 }
 
 export function SplitLayout({
@@ -18,6 +22,8 @@ export function SplitLayout({
   showcase,
   showcaseLabel,
   initialShowcaseScroll = 0,
+  showcaseClassName,
+  hideMobileShowcase = false,
 }: SplitLayoutProps) {
   const showcaseRef = useRef<HTMLElement>(null)
 
@@ -37,9 +43,11 @@ export function SplitLayout({
             <div>
               <div className="stagger">{panel}</div>
 
-              <div className="mt-12 md:hidden" aria-label={showcaseLabel}>
-                {showcase}
-              </div>
+              {!hideMobileShowcase && (
+                <div className="mt-12 md:hidden" aria-label={showcaseLabel}>
+                  {showcase}
+                </div>
+              )}
             </div>
           </div>
 
@@ -51,7 +59,10 @@ export function SplitLayout({
 
       <section
         ref={showcaseRef}
-        className="hidden h-full flex-1 overflow-y-auto overscroll-contain bg-background md:block md:border-l md:border-border/80"
+        className={cn(
+          "hidden h-full flex-1 overflow-y-auto overscroll-contain bg-background md:block md:border-l md:border-border/80",
+          showcaseClassName
+        )}
         aria-label={showcaseLabel}
       >
         <div className="relative">{showcase}</div>
@@ -59,3 +70,4 @@ export function SplitLayout({
     </main>
   )
 }
+

@@ -2,7 +2,8 @@ import { SplitLayout } from "@/components/split-layout"
 import { buttonVariants } from "@/components/ui/button"
 import { products, type CaseStudyStep, type Product as ProductData } from "@/data/products"
 import { CONTACT_EMAIL } from "@/lib/site"
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
+import { CopyEmailButton } from "@/components/copy-email-button"
+import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import { useEffect, type ReactNode } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
 
@@ -77,7 +78,24 @@ function Facts({ product }: { product: ProductData }) {
   )
 }
 
-function CaseStudyPanel({ product, next }: { product: ProductData; next: ProductData }) {
+function ProductGallery({ product }: { product: ProductData }) {
+  const images = [product.image, ...(product.gallery ?? [])]
+  return (
+    <div className="grid gap-4">
+      {images.map((image, imageIndex) => (
+        <div className="border border-border/80" key={`${image}-${imageIndex}`}>
+          <img
+            className="block h-auto w-full rounded-none"
+            src={image}
+            alt={`${product.name} screen ${imageIndex + 1}`}
+          />
+        </div>
+      ))}
+    </div>
+  )
+}
+
+function CaseStudyPanel({ product }: { product: ProductData }) {
   const study = product.caseStudy ?? {}
   const navigate = useNavigate()
 
@@ -108,6 +126,10 @@ function CaseStudyPanel({ product, next }: { product: ProductData; next: Product
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
+      </div>
+
+      <div className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4 md:hidden" aria-label={`${product.name} gallery`}>
+        <ProductGallery product={product} />
       </div>
 
       <Block>
@@ -172,20 +194,13 @@ function CaseStudyPanel({ product, next }: { product: ProductData; next: Product
           <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}>
             Book a call
           </a>
-          <a className="text-sm text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
-          </a>
+          <div className="inline-flex items-center gap-1.5">
+            <a className="text-sm text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            <CopyEmailButton email={CONTACT_EMAIL} />
+          </div>
         </div>
-      </Block>
-
-      <Block label="Next">
-        <Link className="group flex items-center justify-between gap-4" to={`/work/${next.slug}`}>
-          <span>
-            <span className="block text-sm leading-6 font-medium text-foreground">{next.name}</span>
-            <span className="block text-sm leading-6">{next.category}</span>
-          </span>
-          <ArrowRight className="size-4 text-muted-foreground transition-[color,translate] group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden="true" />
-        </Link>
       </Block>
     </>
   )
@@ -195,7 +210,6 @@ export default function Product() {
   const { slug } = useParams()
   const index = products.findIndex((item) => item.slug === slug)
   const product = products[index]
-  const next = products[(index + 1) % products.length]
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -218,8 +232,9 @@ export default function Product() {
     <SplitLayout
       // Remount per product so the showcase scroll position resets
       key={product.slug}
+      hideMobileShowcase={true}
       panelLabel={`${product.name} case study`}
-      panel={<CaseStudyPanel product={product} next={next} />}
+      panel={<CaseStudyPanel product={product} />}
       showcaseLabel={`${product.name} screenshots`}
       showcase={
         <div className="grid gap-4">
