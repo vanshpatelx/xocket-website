@@ -35,6 +35,8 @@ export type Product = {
   category: string
   /** What kind of product it is, shown as the first chip (e.g. Dashboard, Mobile App) */
   type: string
+  /** 2-3 concise highlight badges shown alongside product name */
+  badges: string[]
   /** Short intro paragraphs at the top of the product page */
   intro: string[]
   image: string
@@ -61,6 +63,7 @@ export const products: Product[] = [
     name: 'Medesk',
     category: 'Healthcare SaaS',
     type: 'Dashboard',
+    badges: ['Healthcare SaaS', 'Dashboard', 'OpenAI'],
     intro: [
       'Medesk is a hospital operations platform that gives care teams one live view of appointments, wait times, bed occupancy and staff performance.',
       'We partnered with the founding team from first prototype to production, designing and engineering the core dashboard and an AI assistant that answers questions across operational data.',
@@ -127,6 +130,7 @@ export const products: Product[] = [
     name: 'Bionis',
     category: 'Health & Wellness',
     type: 'Dashboard',
+    badges: ['Health & Wellness', 'Dashboard', 'LLM Agents'],
     intro: [
       'Bionis turns sleep, activity and recovery signals into a single daily wellness score, with AI insights that explain what changed and what to do next.',
       'We designed and built the product end to end, from the scoring model to the dashboard experience.',
@@ -181,6 +185,7 @@ export const products: Product[] = [
     name: 'Medesk Analytics',
     category: 'Healthcare Data',
     type: 'Analytics',
+    badges: ['Healthcare Data', 'Analytics', 'ClickHouse'],
     intro: [
       'An analytics module for Medesk that surfaces trends in appointment volume, no-shows and department load, with scheduled reports for hospital leadership.',
     ],
@@ -208,6 +213,7 @@ export const products: Product[] = [
     name: 'Bionis Coach',
     category: 'AI Assistant',
     type: 'AI Assistant',
+    badges: ['AI Assistant', 'RAG Pipeline', 'Claude API'],
     intro: [
       'A conversational AI coach that reads Bionis health data and goals to give personalised, context-aware guidance on sleep, training and recovery.',
     ],
@@ -238,6 +244,7 @@ export const products: Product[] = [
     name: 'Medesk Staff',
     category: 'Workforce Management',
     type: 'Web App',
+    badges: ['Workforce', 'Web App', 'Go & Redis'],
     intro: [
       'Shift scheduling, patient load balancing and performance tracking for doctors and nurses, integrated with the core Medesk platform.',
     ],
@@ -261,6 +268,7 @@ export const products: Product[] = [
     name: 'Bionis Sleep',
     category: 'Consumer Health',
     type: 'Mobile App',
+    badges: ['Consumer Health', 'Mobile App', 'React Native'],
     intro: [
       'A mobile app that detects sleep debt from wearable data and builds recovery plans, with nightly summaries and weekly trends.',
     ],

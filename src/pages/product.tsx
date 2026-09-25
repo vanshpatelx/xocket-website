@@ -4,13 +4,12 @@ import { products, type CaseStudyStep, type Product as ProductData } from "@/dat
 import { CONTACT_EMAIL } from "@/lib/site"
 import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
 import { useEffect, type ReactNode } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
 
 function displayUrl(url: string) {
   return url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
-/** A panel section separated by a rule that runs across the panel's grid lines */
 function Block({ label, children }: { label?: string; children: ReactNode }) {
   return (
     <section className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4">
@@ -80,15 +79,31 @@ function Facts({ product }: { product: ProductData }) {
 
 function CaseStudyPanel({ product, next }: { product: ProductData; next: ProductData }) {
   const study = product.caseStudy ?? {}
+  const navigate = useNavigate()
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/')
+    }
+  }
 
   return (
     <>
       <div className="pb-8">
-        <Link className="inline-flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground -ml-2" to="/" aria-label="Back to all work">
-          <ArrowLeft className="size-4" aria-hidden="true" />
-        </Link>
-        <h1 className="mt-5 text-base leading-6 font-semibold text-foreground">{product.name}</h1>
-        <div className="mt-2 space-y-4 text-sm leading-6 text-muted-foreground">
+        <div className="mb-6 flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex size-7 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+          </button>
+          <h1 className="text-base leading-6 font-semibold text-foreground">{product.name}</h1>
+        </div>
+        <div className="mt-4 space-y-4 text-sm leading-6 text-muted-foreground">
           {product.intro.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
@@ -205,7 +220,6 @@ export default function Product() {
       key={product.slug}
       panelLabel={`${product.name} case study`}
       panel={<CaseStudyPanel product={product} next={next} />}
-      centerShowcase
       showcaseLabel={`${product.name} screenshots`}
       showcase={
         <div className="grid gap-4">

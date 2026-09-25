@@ -162,6 +162,24 @@ body::before {
     --radius-2xl: calc(var(--radius) * 1.8);
     --radius-3xl: calc(var(--radius) * 2.2);
     --radius-4xl: calc(var(--radius) * 2.6);
+    --animate-marquee: marquee var(--duration) infinite linear;
+    --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+        }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+        }
+    }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+        }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+        }
+    }
 }
 
 .dark {
@@ -313,4 +331,37 @@ body::before {
     .grid-rules {
         --grid-line-y: 20px;
     }
+}
+
+/* Brand gradient glow fading upwards from the bottom based on logo.svg */
+.brand-gradient-glow {
+    position: fixed;
+    inset-x: 0;
+    bottom: 0;
+    width: 100%;
+    height: 180px;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.brand-gradient-glow::before {
+    content: "";
+    position: absolute;
+    inset-x: 0;
+    bottom: -20px;
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #7a00ff 0%,
+        #00bbff 20%,
+        #00f5a0 42%,
+        #ffe600 62%,
+        #ff7a00 82%,
+        #ff005d 100%
+    );
+    opacity: 0.45;
+    filter: blur(50px);
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1) 0%, transparent 100%);
 }
