@@ -1,4 +1,4 @@
-import type { ReactNode } from "react"
+import { useEffect, useRef, type ReactNode } from "react"
 import { Footer } from "@/components/footer"
 
 type SplitLayoutProps = {
@@ -8,9 +8,24 @@ type SplitLayoutProps = {
   /** Scrollable showcase on the right (stacked under the panel on mobile) */
   showcase: ReactNode
   showcaseLabel: string
+  /** Initial vertical scroll offset for the showcase panel */
+  initialShowcaseScroll?: number
 }
 
-export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel }: SplitLayoutProps) {
+export function SplitLayout({
+  panel,
+  panelLabel,
+  showcase,
+  showcaseLabel,
+  initialShowcaseScroll = 0,
+}: SplitLayoutProps) {
+  const showcaseRef = useRef<HTMLElement>(null)
+
+  useEffect(() => {
+    if (showcaseRef.current && initialShowcaseScroll > 0) {
+      showcaseRef.current.scrollTop = initialShowcaseScroll
+    }
+  }, [initialShowcaseScroll])
   return (
     <main className="relative z-[1] flex min-h-screen bg-background md:h-screen md:overflow-hidden">
       <section
@@ -35,7 +50,8 @@ export function SplitLayout({ panel, panelLabel, showcase, showcaseLabel }: Spli
       </section>
 
       <section
-        className="hidden h-full flex-1 overflow-y-auto overscroll-contain bg-background md:block"
+        ref={showcaseRef}
+        className="hidden h-full flex-1 overflow-y-auto overscroll-contain bg-background md:block md:border-l md:border-border/80"
         aria-label={showcaseLabel}
       >
         <div className="relative">{showcase}</div>

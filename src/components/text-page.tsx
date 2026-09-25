@@ -40,7 +40,7 @@ export function TextPage({ title, intro, documentTitle, children }: TextPageProp
       }
       showcaseLabel={`${title} content`}
       showcase={
-        <article className="border border-border/80 bg-card p-6 sm:p-10">
+        <article className="p-6 sm:p-10">
           <div className="space-y-10 text-sm leading-6 text-muted-foreground">{children}</div>
         </article>
       }

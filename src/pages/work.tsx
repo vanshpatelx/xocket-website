@@ -30,6 +30,7 @@ export default function Work() {
 
   return (
     <SplitLayout
+      initialShowcaseScroll={240}
       panelLabel="Work panel"
       panel={
         <>
@@ -96,60 +97,63 @@ export default function Work() {
       showcase={
         <div className="grid gap-4">
           {visible.map((product) => (
-            <Link
-              className="group relative block overflow-hidden rounded-none border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+            <div
+              className="group relative block overflow-hidden rounded-none border border-border/80 bg-card"
               key={product.slug}
-              to={`/work/${product.slug}`}
-              aria-label={`Open ${product.name}`}
             >
               <div className="aspect-[4/3] overflow-hidden sm:aspect-auto">
                 <img
-                  className="block h-auto w-[180%] max-w-none rounded-none sm:w-full"
+                  className="block h-auto w-[200%] max-w-none origin-top-left rounded-none sm:w-full"
                   src={product.image}
                   alt={`${product.name} preview`}
                 />
               </div>
 
-              {/* Mobile: bottom section with title, badges as chips, and Open link */}
-              <div className="flex items-start justify-between gap-4 border-t border-border/80 px-4 py-3 sm:hidden">
-                <div className="min-w-0 flex-1">
-                  <div className="text-sm leading-5 font-semibold text-foreground">{product.name}</div>
-                  <div className="mt-2 flex flex-wrap gap-1.5">
-                    {product.badges.map((badge) => (
-                      <span
-                        className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md"
-                        key={badge}
-                      >
-                        {badge}
-                      </span>
-                    ))}
-                  </div>
+              {/* Mobile: bottom section with title & Open in same line, badges in bottom line */}
+              <div className="flex flex-col gap-2.5 border-t border-border/80 px-4 py-3 sm:hidden">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-base font-bold text-foreground">{product.name}</div>
+                  <Link
+                    to={`/work/${product.slug}`}
+                    className="group/open inline-flex shrink-0 items-center gap-1.5 border border-foreground/30 bg-foreground px-3.5 py-1.5 text-xs font-semibold text-background shadow-xs transition-all hover:bg-foreground/90 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    aria-label={`Open ${product.name}`}
+                  >
+                    <span>Open</span>
+                    <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover/open:translate-x-0.5 group-hover/open:-translate-y-0.5" aria-hidden="true" />
+                  </Link>
                 </div>
-                <span className="inline-flex shrink-0 items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md">
-                  Open
-                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
-                </span>
+                <div className="flex flex-wrap gap-1.5">
+                  {product.badges.map((badge) => (
+                    <span
+                      className="border border-border/80 bg-background/85 px-2 py-0.5 text-[11px] leading-4 font-medium text-muted-foreground backdrop-blur-md"
+                      key={badge}
+                    >
+                      {badge}
+                    </span>
+                  ))}
+                </div>
               </div>
 
-              {/* Desktop: 3-4 clean badges inside the image */}
+              {/* Desktop: clean uniform badges inside the image + dedicated Open button */}
               <div className="absolute inset-x-5 bottom-3 hidden flex-wrap items-center gap-1.5 sm:flex">
-                <span className="border border-foreground/25 bg-background/85 px-2.5 py-1 text-xs leading-5 font-semibold text-foreground backdrop-blur-md">
-                  {product.name}
-                </span>
                 {product.badges.map((badge) => (
                   <span
-                    className="border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md"
+                    className="border border-border/80 bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-muted-foreground backdrop-blur-md"
                     key={badge}
                   >
                     {badge}
                   </span>
                 ))}
-                <span className="ml-auto inline-flex items-center gap-1 border border-border bg-background/85 px-2.5 py-1 text-xs leading-5 font-medium text-foreground backdrop-blur-md">
-                  Open
-                  <ArrowUpRight className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" aria-hidden="true" />
-                </span>
+                <Link
+                  to={`/work/${product.slug}`}
+                  className="group/open ml-auto inline-flex items-center gap-1.5 border border-foreground/30 bg-foreground px-3.5 py-1.5 text-xs font-semibold text-background shadow-xs transition-all hover:bg-foreground/90 hover:gap-2 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                  aria-label={`Open ${product.name}`}
+                >
+                  <span>Open</span>
+                  <ArrowUpRight className="size-3.5 transition-transform duration-200 group-hover/open:translate-x-0.5 group-hover/open:-translate-y-0.5" aria-hidden="true" />
+                </Link>
               </div>
-            </Link>
+            </div>
           ))}
         </div>
       }
