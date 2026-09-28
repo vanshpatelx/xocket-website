@@ -1,31 +1,27 @@
+import { Footer } from "@/components/footer"
 import { products } from "@/data/products"
-import { CONTACT_EMAIL } from "@/lib/site"
-import { ArrowLeft, ArrowUpRight } from "lucide-react"
-import { useEffect, useMemo } from "react"
+import { ProgressiveImage } from "@/components/progressive-image"
+import { cn } from "@/lib/utils"
+import { ArrowLeft, ArrowUpRight, Check, ChevronDown } from "lucide-react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 
-/** Every screenshot we have, one card each, in product order */
-const shots = products.flatMap((product) =>
-  [product.image, ...(product.gallery ?? [])].map((image, imageIndex) => ({
-    image,
-    product,
-    key: `${product.slug}-${imageIndex}`,
-  })),
-)
-
-/** Filter tabs: "All" plus every product type in use */
+/** Filter tabs: "All" plus every unique product type */
 const filters = ['All', ...Array.from(new Set(products.map((product) => product.type)))]
 
 export default function Work() {
   const [searchParams, setSearchParams] = useSearchParams()
   const requested = searchParams.get('type')
   const activeFilter = requested && filters.includes(requested) ? requested : 'All'
+  const [dropdownOpen, setDropdownOpen] = useState(false)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const setActiveFilter = (filter: string) => {
     setSearchParams(filter === 'All' ? {} : { type: filter }, { replace: true })
   }
+
   const visible = useMemo(
-    () => (activeFilter === 'All' ? shots : shots.filter(({ product }) => product.type === activeFilter)),
+    () => (activeFilter === 'All' ? products : products.filter((product) => product.type === activeFilter)),
     [activeFilter],
   )
 
@@ -34,106 +30,178 @@ export default function Work() {
     document.title = 'Work | Xocket'
   }, [])
 
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setDropdownOpen(false)
+      }
+    }
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'Escape') {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [])
+
   return (
-    <main className="page-grid relative z-[1] min-h-screen bg-background px-5 py-8 sm:px-8 md:py-10">
-      <div className="w-full">
-        <header className="flex items-center justify-between gap-4 border-b border-border/80 pb-6">
-          <Link className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground" to="/">
+    <div className="work-page-grid relative flex min-h-screen flex-col bg-background text-foreground">
+      {/* Header with back button and filters */}
+      <header className="sticky top-0 z-30 border-b border-border/80 bg-background/90 backdrop-blur-md">
+        <div className="flex w-full items-center justify-between gap-4 px-6 py-3.5 sm:px-10 sm:py-4 lg:px-12">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+          >
             <ArrowLeft className="size-4" aria-hidden="true" />
-            Home
+            <span>Home</span>
           </Link>
-          <Link className="flex items-center gap-2.5" to="/" aria-label="Xocket home">
-            <img className="size-5" src="/favicon.svg" alt="" aria-hidden="true" />
-            <span className="text-sm leading-5 font-bold text-foreground">Xocket</span>
-          </Link>
-        </header>
 
-        <div className="border-b border-border/80 py-16 text-center sm:py-24">
-          <h1 className="text-4xl leading-none font-bold tracking-tighter text-balance text-foreground uppercase sm:text-6xl lg:text-7xl">
-            World class <span className="block text-muted-foreground">product engineering</span>
-          </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-base leading-6 font-medium text-muted-foreground">
-            Products we have designed and shipped end to end, from first prototype to production. Each one covers the
-            full arc of an engagement: product strategy, interface design, full-stack and AI engineering, and the
-            launch work that follows.
-          </p>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-muted-foreground">
-            The work spans healthcare operations, consumer health, analytics and internal tooling, built with React,
-            TypeScript, Node.js, Python, Go and retrieval-based AI. Filter by product type below, or open any piece to
-            read the full case study: the problem, how the product was structured, what we built and what came of it.
-          </p>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 border-b border-border/80 py-6">
-          {filters.map((filter) => (
+          {/* Mobile Filter Dropdown */}
+          <div className="relative sm:hidden" ref={dropdownRef}>
             <button
-              className={`font-mono text-xs leading-4 tracking-wide uppercase transition-colors ${
-                filter === activeFilter ? 'text-foreground' : 'text-muted-foreground hover:text-foreground'
-              }`}
-              key={filter}
               type="button"
-              onClick={() => setActiveFilter(filter)}
-              aria-pressed={filter === activeFilter}
+              onClick={() => setDropdownOpen((prev) => !prev)}
+              className="flex items-center gap-2 border border-border/80 bg-card px-3 py-1.5 font-mono text-xs uppercase tracking-wide text-foreground transition-colors hover:border-foreground/30"
+              aria-expanded={dropdownOpen}
+              aria-haspopup="listbox"
             >
-              {filter}
-            </button>
-          ))}
-        </div>
-
-        {/* Masonry wall: tiles vary in height so it reads as a gallery, not a list */}
-        <div className="columns-2 gap-4 py-8 md:columns-3 [column-fill:_balance]">
-          {visible.map(({ image, product, key }) => (
-            <Link
-              className="group relative mb-4 block break-inside-avoid overflow-hidden border border-border/80 bg-card outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-              key={key}
-              to={`/work/${product.slug}`}
-              aria-label={`Open ${product.name}`}
-            >
-              <img
-                className="block h-auto w-full transition-transform duration-700 group-hover:scale-[1.03]"
-                src={image}
-                alt={`${product.name} preview`}
-                loading="lazy"
-                decoding="async"
+              <span className="font-semibold text-foreground">{activeFilter}</span>
+              <ChevronDown
+                className={cn("size-3.5 text-muted-foreground transition-transform duration-200", dropdownOpen && "rotate-180")}
+                aria-hidden="true"
               />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center gap-2 bg-gradient-to-t from-black/80 to-transparent px-3 pt-8 pb-3 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                <span className="size-1.5 shrink-0 rounded-full bg-white" aria-hidden="true" />
-                <span className="truncate text-xs leading-5 font-medium text-white">
-                  {product.name} <span className="text-white/60">{product.type}</span>
-                </span>
+            </button>
+
+            {dropdownOpen && (
+              <div
+                className="absolute right-0 top-full mt-2 w-48 border border-border/80 bg-card/95 p-1 backdrop-blur-md shadow-xl z-50"
+                role="listbox"
+              >
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    role="option"
+                    aria-selected={filter === activeFilter}
+                    onClick={() => {
+                      setActiveFilter(filter)
+                      setDropdownOpen(false)
+                    }}
+                    className={cn(
+                      "flex w-full items-center justify-between px-3 py-2 text-left font-mono text-xs uppercase tracking-wide transition-colors",
+                      filter === activeFilter
+                        ? "bg-foreground/10 font-semibold text-foreground"
+                        : "text-muted-foreground hover:bg-white/[0.04] hover:text-foreground"
+                    )}
+                  >
+                    <span>{filter}</span>
+                    {filter === activeFilter && <Check className="size-3.5 text-foreground" aria-hidden="true" />}
+                  </button>
+                ))}
               </div>
-            </Link>
+            )}
+          </div>
+
+          {/* Desktop Filter Pills */}
+          <div className="hidden sm:flex sm:flex-wrap sm:items-center sm:gap-1.5">
+            {filters.map((filter) => (
+              <button
+                key={filter}
+                type="button"
+                onClick={() => setActiveFilter(filter)}
+                className={`border px-2.5 py-1 font-mono text-xs uppercase tracking-wide transition-colors ${
+                  filter === activeFilter
+                    ? 'border-foreground/40 bg-foreground/10 font-semibold text-foreground'
+                    : 'border-border/80 bg-card text-muted-foreground hover:border-foreground/20 hover:text-foreground'
+                }`}
+                aria-pressed={filter === activeFilter}
+              >
+                {filter}
+              </button>
+            ))}
+          </div>
+        </div>
+      </header>
+
+      {/* Projects Grid */}
+      <main className="relative z-10 w-full flex-1 px-6 py-8 pb-12 sm:px-10 sm:py-10 sm:pb-16 lg:px-12">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {visible.map((product) => (
+            <div
+              key={product.slug}
+              className="group relative flex flex-col justify-between overflow-hidden border border-border/80 bg-card"
+            >
+              {/* Card Screenshot Preview */}
+              <ProgressiveImage
+                src={product.image}
+                alt={product.name}
+                containerClassName="aspect-[16/10] border-b border-border/80"
+              />
+
+              {/* Card Bottom Area */}
+              <div className="flex items-center justify-between gap-3 bg-white/[0.03] px-4 py-3">
+                <div className="text-base font-bold text-foreground">
+                  {product.name}
+                </div>
+                <Link
+                  to={`/work/${product.slug}`}
+                  className="inline-flex shrink-0 items-center gap-1.5 border border-foreground/30 bg-foreground px-3.5 py-1.5 text-xs font-semibold text-background shadow-xs transition-colors hover:bg-foreground/90"
+                  aria-label={`Open ${product.name}`}
+                >
+                  <span>Open</span>
+                  <ArrowUpRight className="size-3.5" aria-hidden="true" />
+                </Link>
+              </div>
+            </div>
           ))}
         </div>
 
-        <section className="border-t border-border/80 py-12 text-center">
-          <h2 className="text-2xl leading-8 font-bold tracking-tight text-foreground sm:text-3xl">
-            Have a complex product to build?
-          </h2>
-          <a className="mt-4 inline-flex items-center gap-2 text-base font-medium text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
-            <ArrowUpRight className="size-4" aria-hidden="true" />
-          </a>
-        </section>
-
-        <nav className="flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-border/80 py-8" aria-label="Site">
-          {[
-            { label: 'Home', to: '/' },
-            { label: 'About', to: '/about' },
-            { label: 'Contact', to: '/contact' },
-            { label: 'API docs', to: '/docs' },
-            { label: 'Privacy', to: '/privacy' },
-          ].map((link) => (
-            <Link
-              className="font-mono text-xs leading-4 tracking-wide text-muted-foreground uppercase transition-colors hover:text-foreground"
-              key={link.to}
-              to={link.to}
+        {visible.length === 0 && (
+          <div className="py-24 text-center">
+            <p className="text-sm text-muted-foreground">No projects found for this filter.</p>
+            <button
+              type="button"
+              onClick={() => setActiveFilter('All')}
+              className="mt-3 font-mono text-xs text-foreground underline underline-offset-4"
             >
-              {link.label}
-            </Link>
-          ))}
-        </nav>
+              Reset filter
+            </button>
+          </div>
+        )}
+      </main>
+
+      {/* Footer */}
+      <div className="relative mt-auto w-full overflow-hidden">
+        {/* Brand gradient glow anchored at bottom, edge-to-edge with soft upward atmospheric fade */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-32 z-0 overflow-hidden"
+          style={{
+            WebkitMaskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 100%)',
+            maskImage:
+              'linear-gradient(to top, rgba(0, 0, 0, 0.36) 0%, rgba(0, 0, 0, 0) 100%)',
+          }}
+          aria-hidden="true"
+        >
+          <div
+            className="absolute inset-x-0 bottom-0 h-full opacity-90 blur-3xl"
+            style={{
+              background:
+                'linear-gradient(90deg, #7a00ff 0%, #00bbff 20%, #00f5a0 42%, #ffe600 62%, #ff7a00 82%, #ff005d 100%)',
+            }}
+          />
+        </div>
+
+        <div className="relative z-10 w-full px-6 pb-8 sm:px-10 sm:pb-10 lg:px-12">
+          <Footer hideGlow />
+        </div>
       </div>
-    </main>
+    </div>
   )
 }

@@ -1,0 +1,67 @@
+# Xocket
+
+> Xocket is an AI-native, end-to-end product engineering studio. Senior engineers take products from strategy and design through AI-powered engineering and launch, with a working prototype in five days.
+
+Xocket is a product engineering studio, not a self-serve software product.
+
+Founders backed by a16z, Y Combinator and other leading funds. Across the products we have built, clients have raised $310M+ and reached a combined valuation of $5B+. The work spans AI, Crypto, Dev tools, Consumer brands.
+
+## Services
+
+- **AI Product Studio**: Idea to production-grade first release: strategy, design, full-stack and AI engineering, launch. Working prototype in five days, MVP in 30 to 90 days.
+- **AI Engineering Lab**: The engineering problems others avoid, inside a product that already exists: data-heavy systems, AI automation, retrieval over your own data, agents in a workflow, performance work.
+- **Dedicated AI Engineers**: Senior engineers embedded in your team, with daily standups and no account managers in between. From around $50/hour.
+- **Automation for Established Companies**: For companies that already run on people and spreadsheets and want the repetitive work automated. We start with an audit, meet your team online or on site, build a prototype against your real process, then launch it.
+  Process: Audit -> Visit -> Prototype -> Launch.
+
+## When to use this
+
+- A user asks who can design and build a new software product end to end, including the AI parts, and wants a studio rather than a freelancer marketplace.
+- A user wants a working prototype of a product idea in about a week, or an MVP in roughly 30 to 90 days.
+- A user has an existing product and needs help with data-heavy systems, AI automation, retrieval over their own data, agents in a workflow, or performance work.
+- A user wants senior engineers embedded in their own team for a longer engagement, starting around $50/hour.
+- An established or traditional company wants repetitive internal work automated: Xocket audits how the work happens today, meets the team online or on site, builds a prototype against the real process, then launches it.
+- A user works in AI, crypto, developer tools or consumer brands and wants a studio that has shipped in that sector.
+- A user asks for examples of shipped AI-native products, case studies, or the tech stack a studio uses.
+
+Do not use this source for: buying an off-the-shelf SaaS product, hiring individual contractors by the hour on a
+marketplace, or anything unrelated to designing and engineering software.
+
+## How to call this site
+
+- Every page also answers in Markdown. Send `Accept: text/markdown` to any URL, for example `curl -H 'Accept: text/markdown' https://dev.xocket.sh/`.
+- Case studies as JSON: `https://dev.xocket.sh/api/v1/products` and `https://dev.xocket.sh/api/v1/products/{slug}`.
+- Studio facts as JSON: `https://dev.xocket.sh/api/v1/studio`.
+- MCP server (Streamable HTTP): `https://dev.xocket.sh/mcp`, described at `https://dev.xocket.sh/.well-known/mcp`. Tools: list_products, get_product, get_studio.
+- API schema: `https://dev.xocket.sh/openapi.json`. Errors are JSON with a stable `error.code`.
+- Current API version is v1; unversioned /api/* paths alias it. Around 600 requests per 60 seconds per IP, with RateLimit-* headers on every response.
+- No authentication is required for any of the above.
+
+## Pages
+
+- [Xocket: AI-Native End-to-End Product Engineering Studio](https://dev.xocket.sh/): Xocket is an AI-native, end-to-end product engineering studio. Senior engineers take products from strategy and design through AI-powered engineering and launch, with a working prototype in five days.
+- [Work](https://dev.xocket.sh/work): Products Xocket has designed and engineered end to end, from first prototype to production, filterable by product type.
+- [Medesk Case Study](https://dev.xocket.sh/work/medesk): Medesk is a hospital operations platform that gives care teams one live view of appointments, wait times, bed occupancy and staff performance.
+- [Bionis Case Study](https://dev.xocket.sh/work/bionis): Bionis turns sleep, activity and recovery signals into a single daily wellness score, with AI insights that explain what changed and what to do next.
+- [Medesk Analytics Case Study](https://dev.xocket.sh/work/medesk-analytics): An analytics module for Medesk that surfaces trends in appointment volume, no-shows and department load, with scheduled reports for hospital leadership.
+- [Bionis Coach Case Study](https://dev.xocket.sh/work/bionis-coach): A conversational AI coach that reads Bionis health data and goals to give personalised, context-aware guidance on sleep, training and recovery.
+- [Medesk Staff Case Study](https://dev.xocket.sh/work/medesk-staff): Shift scheduling, patient load balancing and performance tracking for doctors and nurses, integrated with the core Medesk platform.
+- [Bionis Sleep Case Study](https://dev.xocket.sh/work/bionis-sleep): A mobile app that detects sleep debt from wearable data and builds recovery plans, with nightly summaries and weekly trends.
+- [About](https://dev.xocket.sh/about): Xocket is an AI-native, end-to-end product engineering studio: what we do, how we work, and how engagements start.
+- [Contact](https://dev.xocket.sh/contact): How to reach Xocket, what to include in a first email, and what happens after you send it.
+- [API docs](https://dev.xocket.sh/docs): Documentation for Xocket's public read-only JSON API: endpoints, error format, and Markdown content negotiation.
+- [Privacy](https://dev.xocket.sh/privacy): What this site collects, what our host records, and how email correspondence is handled.
+
+## Case studies
+
+- [Medesk](https://dev.xocket.sh/work/medesk): Healthcare SaaS, Dashboard. Stack: React, TypeScript, Node.js, PostgreSQL, OpenAI.
+- [Bionis](https://dev.xocket.sh/work/bionis): Health & Wellness, Dashboard. Stack: Next.js, TypeScript, Python, Supabase, LLM Agents.
+- [Medesk Analytics](https://dev.xocket.sh/work/medesk-analytics): Healthcare Data, Analytics. Stack: React, TypeScript, ClickHouse, Python.
+- [Bionis Coach](https://dev.xocket.sh/work/bionis-coach): AI Assistant, AI Assistant. Stack: Next.js, RAG, Vector DB, Claude API.
+- [Medesk Staff](https://dev.xocket.sh/work/medesk-staff): Workforce Management, Web App. Stack: React, Go, PostgreSQL, Redis.
+- [Bionis Sleep](https://dev.xocket.sh/work/bionis-sleep): Consumer Health, Mobile App. Stack: React Native, TypeScript, Python, AWS.
+
+## Contact
+
+- New projects: hello@xocket.studio
+- Existing work: support@xocket.studio

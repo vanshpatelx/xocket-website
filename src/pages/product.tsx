@@ -2,15 +2,16 @@ import { SplitLayout } from "@/components/split-layout"
 import { buttonVariants } from "@/components/ui/button"
 import { products, type CaseStudyStep, type Product as ProductData } from "@/data/products"
 import { CONTACT_EMAIL } from "@/lib/site"
-import { ArrowLeft, ArrowRight, ArrowUpRight } from "lucide-react"
+import { CopyEmailButton } from "@/components/copy-email-button"
+import { ArrowLeft, ArrowUpRight } from "lucide-react"
 import { useEffect, type ReactNode } from "react"
-import { Link, useParams } from "react-router-dom"
+import { Link, useNavigate, useParams } from "react-router-dom"
+import { ProgressiveImage } from "@/components/progressive-image"
 
 function displayUrl(url: string) {
   return url.replace(/^https?:\/\//, '').replace(/\/$/, '')
 }
 
-/** A panel section separated by a rule that runs across the panel's grid lines */
 function Block({ label, children }: { label?: string; children: ReactNode }) {
   return (
     <section className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4">
@@ -78,21 +79,57 @@ function Facts({ product }: { product: ProductData }) {
   )
 }
 
-function CaseStudyPanel({ product, next }: { product: ProductData; next: ProductData }) {
+function ProductGallery({ product }: { product: ProductData }) {
+  const images = [product.image, ...(product.gallery ?? [])]
+  return (
+    <div className="grid gap-4">
+      {images.map((image, imageIndex) => (
+        <ProgressiveImage
+          key={`${image}-${imageIndex}`}
+          src={image}
+          alt={`${product.name} screen ${imageIndex + 1}`}
+          priority={imageIndex === 0}
+        />
+      ))}
+    </div>
+  )
+}
+
+function CaseStudyPanel({ product }: { product: ProductData }) {
   const study = product.caseStudy ?? {}
+  const navigate = useNavigate()
+
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1)
+    } else {
+      navigate('/')
+    }
+  }
 
   return (
     <>
       <div className="pb-8">
-        <Link className="inline-flex size-8 items-center justify-center text-muted-foreground transition-colors hover:text-foreground -ml-2" to="/" aria-label="Back to all work">
-          <ArrowLeft className="size-4" aria-hidden="true" />
-        </Link>
-        <h1 className="mt-5 text-base leading-6 font-semibold text-foreground">{product.name}</h1>
-        <div className="mt-2 space-y-4 text-sm leading-6 text-muted-foreground">
+        <div className="mb-6 flex items-center gap-2.5">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="inline-flex size-7 cursor-pointer items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
+            aria-label="Go back"
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+          </button>
+          <h1 className="text-base leading-6 font-semibold text-foreground">{product.name}</h1>
+        </div>
+        <div className="mt-4 space-y-4 text-sm leading-6 text-muted-foreground">
           {product.intro.map((paragraph) => (
             <p key={paragraph}>{paragraph}</p>
           ))}
         </div>
+      </div>
+
+      <div className="-mx-2.5 border-t border-border/80 px-2.5 py-8 sm:-mx-4 sm:px-4 md:hidden" aria-label={`${product.name} gallery`}>
+        <ProductGallery product={product} />
       </div>
 
       <Block>
@@ -157,20 +194,13 @@ function CaseStudyPanel({ product, next }: { product: ProductData; next: Product
           <a className={buttonVariants({ variant: 'default' })} href={`mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`Build something like ${product.name}`)}`}>
             Book a call
           </a>
-          <a className="text-sm text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
-            {CONTACT_EMAIL}
-          </a>
+          <div className="inline-flex items-center gap-1.5">
+            <a className="text-sm text-foreground underline-offset-4 hover:underline" href={`mailto:${CONTACT_EMAIL}`}>
+              {CONTACT_EMAIL}
+            </a>
+            <CopyEmailButton email={CONTACT_EMAIL} />
+          </div>
         </div>
-      </Block>
-
-      <Block label="Next">
-        <Link className="group flex items-center justify-between gap-4" to={`/work/${next.slug}`}>
-          <span>
-            <span className="block text-sm leading-6 font-medium text-foreground">{next.name}</span>
-            <span className="block text-sm leading-6">{next.category}</span>
-          </span>
-          <ArrowRight className="size-4 text-muted-foreground transition-[color,translate] group-hover:translate-x-0.5 group-hover:text-foreground" aria-hidden="true" />
-        </Link>
       </Block>
     </>
   )
@@ -180,7 +210,6 @@ export default function Product() {
   const { slug } = useParams()
   const index = products.findIndex((item) => item.slug === slug)
   const product = products[index]
-  const next = products[(index + 1) % products.length]
 
   useEffect(() => {
     window.scrollTo(0, 0)
@@ -203,20 +232,19 @@ export default function Product() {
     <SplitLayout
       // Remount per product so the showcase scroll position resets
       key={product.slug}
+      hideMobileShowcase={true}
       panelLabel={`${product.name} case study`}
-      panel={<CaseStudyPanel product={product} next={next} />}
-      centerShowcase
+      panel={<CaseStudyPanel product={product} />}
       showcaseLabel={`${product.name} screenshots`}
       showcase={
         <div className="grid gap-4">
           {[product.image, ...(product.gallery ?? [])].map((image, imageIndex) => (
-            <div className="border border-border/80" key={`${image}-${imageIndex}`}>
-              <img
-                className="block h-auto w-full rounded-none"
-                src={image}
-                alt={`${product.name} screen ${imageIndex + 1}`}
-              />
-            </div>
+            <ProgressiveImage
+              key={`${image}-${imageIndex}`}
+              src={image}
+              alt={`${product.name} screen ${imageIndex + 1}`}
+              priority={imageIndex === 0}
+            />
           ))}
         </div>
       }
