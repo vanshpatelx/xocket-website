@@ -9,7 +9,7 @@ const dist = join(import.meta.dirname, '..', 'dist')
 const read = (file: string) => readFileSync(join(dist, file), 'utf8')
 
 const studioJson = async () => {
-  const url = new URL('https://dev.xocket.sh/api/v1/studio')
+  const url = new URL('https://xocket.sh/api/v1/studio')
   return handleApi(new Request(url), url, `studio-${Math.random()}`)!.json()
 }
 

@@ -12,6 +12,15 @@
   },
   "routes": [
     {
+      "pattern": "xocket.sh",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.xocket.sh",
+      "custom_domain": true
+    },
+    // Kept as a staging host; the canonical URL is the apex.
+    {
       "pattern": "dev.xocket.sh",
       "custom_domain": true
     }
