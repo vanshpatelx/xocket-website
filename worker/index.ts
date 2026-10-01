@@ -49,6 +49,14 @@ async function notFound(request: Request, env: Env, wantsMarkdown: boolean): Pro
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url)
+
+    // www duplicates the apex. Send it to the canonical host before anything
+    // else runs, so there is exactly one indexable copy of every page.
+    if (url.hostname.startsWith('www.')) {
+      url.hostname = url.hostname.slice(4)
+      return Response.redirect(url.toString(), 301)
+    }
+
     const path = normalizePath(url.pathname)
 
     if (path === '/mcp') return handleMcp(request)

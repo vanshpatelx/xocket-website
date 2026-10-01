@@ -15,6 +15,7 @@ import {
   prefersMarkdown,
 } from '../worker/lib'
 import { products } from '../src/data/products'
+import worker from '../worker/index'
 
 const get = (path: string) => {
   const url = new URL(`https://xocket.sh${path}`)
@@ -239,5 +240,25 @@ describe('api', () => {
   it('builds errors with every field agents branch on', () => {
     const { error } = apiError('code', 'message', 'hint', 400)
     expect(error).toEqual({ code: 'code', message: 'message', hint: 'hint', status: 400 })
+  })
+})
+
+describe('canonical host', () => {
+  const env = { ASSETS: { fetch: async () => new Response('', { status: 404 }) } }
+
+  it('redirects www to the apex, keeping path and query', async () => {
+    const response = await worker.fetch(
+      new Request('https://www.xocket.sh/services?a=1'),
+      env as never,
+    )
+    expect(response.status).toBe(301)
+    expect(response.headers.get('location')).toBe('https://xocket.sh/services?a=1')
+  })
+
+  it('leaves the apex and the staging host alone', async () => {
+    for (const host of ['https://xocket.sh/', 'https://dev.xocket.sh/']) {
+      const response = await worker.fetch(new Request(host), env as never)
+      expect(response.status).not.toBe(301)
+    }
   })
 })
