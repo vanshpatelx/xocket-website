@@ -46,9 +46,9 @@ describe('prerendered pages', () => {
     for (const route of routes) {
       const html = read(pageFile(route.path))
       expect(html).toContain('<html lang="en">')
-      expect(html, `${route.path} canonical`).toMatch(/<link rel="canonical" href="https:\/\/dev\.xocket\.sh/)
+      expect(html, `${route.path} canonical`).toMatch(/<link rel="canonical" href="https:\/\/xocket\.sh/)
       expect(html, `${route.path} og:type`).toMatch(/<meta property="og:type"/)
-      expect(html, `${route.path} og:image`).toMatch(/<meta property="og:image" content="https:\/\/dev\.xocket\.sh\/og\.png"/)
+      expect(html, `${route.path} og:image`).toMatch(/<meta property="og:image" content="https:\/\/xocket\.sh\/og\.png"/)
       expect(html, `${route.path} og:title`).toMatch(/<meta property="og:title"/)
     }
   })
@@ -61,7 +61,7 @@ describe('prerendered pages', () => {
     expect(organization.name).toBe('Xocket')
     expect(organization.contactPoint.length).toBeGreaterThan(0)
     expect(organization.contactPoint[0].email).toContain('@')
-    expect(organization.url).toBe('https://dev.xocket.sh')
+    expect(organization.url).toBe('https://xocket.sh')
   })
 
   it('embeds json-ld on case study pages', () => {
@@ -96,7 +96,7 @@ describe('machine-readable files', () => {
     const sitemap = read('sitemap.xml')
     expect(sitemap).toContain('<?xml version="1.0" encoding="UTF-8"?>')
     for (const route of routes) {
-      const url = `https://dev.xocket.sh${route.path === '/' ? '/' : route.path}`
+      const url = `https://xocket.sh${route.path === '/' ? '/' : route.path}`
       expect(sitemap, `${url} missing from sitemap`).toContain(`<loc>${url}</loc>`)
     }
     expect(sitemap).toMatch(/<lastmod>\d{4}-\d{2}-\d{2}<\/lastmod>/)
@@ -107,7 +107,7 @@ describe('machine-readable files', () => {
     for (const agent of ['GPTBot', 'ClaudeBot', 'ChatGPT-User', 'Google-Extended', 'PerplexityBot']) {
       expect(robots, `${agent} missing`).toContain(`User-agent: ${agent}`)
     }
-    expect(robots).toContain('Sitemap: https://dev.xocket.sh/sitemap.xml')
+    expect(robots).toContain('Sitemap: https://xocket.sh/sitemap.xml')
     expect(robots).not.toContain('Disallow: /')
   })
 
@@ -132,7 +132,7 @@ describe('machine-readable files', () => {
   it('publishes an openapi spec covering every endpoint', () => {
     const spec = JSON.parse(read('openapi.json'))
     expect(spec.openapi).toMatch(/^3\./)
-    expect(spec.servers[0].url).toBe('https://dev.xocket.sh')
+    expect(spec.servers[0].url).toBe('https://xocket.sh')
     // Paths are versioned, and the policies agents rely on are documented.
     expect(Object.keys(spec.paths).every((path) => path.startsWith('/api/v1/'))).toBe(true)
     expect(spec.info.description).toContain('Versioning')

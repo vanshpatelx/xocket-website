@@ -17,7 +17,7 @@ import {
 import { products } from '../src/data/products'
 
 const get = (path: string) => {
-  const url = new URL(`https://dev.xocket.sh${path}`)
+  const url = new URL(`https://xocket.sh${path}`)
   return { request: new Request(url, { method: 'GET' }), url }
 }
 
@@ -214,7 +214,7 @@ describe('api', () => {
   })
 
   it('rejects writes with a json error and an Allow header', async () => {
-    const url = new URL('https://dev.xocket.sh/api/products')
+    const url = new URL('https://xocket.sh/api/products')
     const response = handleApi(new Request(url, { method: 'POST' }), url)!
     expect(response.status).toBe(405)
     expect(response.headers.get('allow')).toBe('GET, HEAD, OPTIONS')
@@ -222,7 +222,7 @@ describe('api', () => {
   })
 
   it('answers CORS preflight', () => {
-    const url = new URL('https://dev.xocket.sh/api/products')
+    const url = new URL('https://xocket.sh/api/products')
     const response = handleApi(new Request(url, { method: 'OPTIONS' }), url)!
     expect(response.status).toBe(204)
     expect(response.headers.get('access-control-allow-methods')).toContain('GET')

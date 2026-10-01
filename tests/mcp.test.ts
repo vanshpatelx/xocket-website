@@ -70,7 +70,7 @@ describe('mcp tools', () => {
 
 describe('mcp transport', () => {
   const post = (body: unknown) =>
-    handleMcp(new Request('https://dev.xocket.sh/mcp', { method: 'POST', body: JSON.stringify(body) }))
+    handleMcp(new Request('https://xocket.sh/mcp', { method: 'POST', body: JSON.stringify(body) }))
 
   it('answers a json-rpc post', async () => {
     const response = await post({ jsonrpc: '2.0', id: 7, method: 'tools/list' })
@@ -92,19 +92,19 @@ describe('mcp transport', () => {
   })
 
   it('reports a parse error for invalid json', async () => {
-    const response = await handleMcp(new Request('https://dev.xocket.sh/mcp', { method: 'POST', body: 'not json' }))
+    const response = await handleMcp(new Request('https://xocket.sh/mcp', { method: 'POST', body: 'not json' }))
     expect(response.status).toBe(400)
     expect((await response.json()).error.code).toBe(-32700)
   })
 
   it('describes itself on GET', async () => {
-    const response = await handleMcp(new Request('https://dev.xocket.sh/mcp'))
+    const response = await handleMcp(new Request('https://xocket.sh/mcp'))
     expect(response.status).toBe(200)
     expect((await response.json()).transport.type).toBe('streamable-http')
   })
 
   it('publishes a manifest naming the transport and tools', () => {
-    expect(manifest.transport.url).toBe('https://dev.xocket.sh/mcp')
+    expect(manifest.transport.url).toBe('https://xocket.sh/mcp')
     expect(manifest.protocolVersion).toBe(MCP_PROTOCOL_VERSION)
     expect(manifest.tools.map((tool) => tool.name)).toEqual(tools.map((tool) => tool.name))
   })

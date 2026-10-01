@@ -8,16 +8,16 @@
     "contact": {
       "name": "Xocket",
       "email": "hello@xocket.studio",
-      "url": "https://dev.xocket.sh/contact"
+      "url": "https://xocket.sh/contact"
     },
     "license": {
       "name": "Content is provided for reference",
-      "url": "https://dev.xocket.sh/privacy"
+      "url": "https://xocket.sh/privacy"
     }
   },
   "servers": [
     {
-      "url": "https://dev.xocket.sh",
+      "url": "https://xocket.sh",
       "description": "Production host. Use the /api/v1 paths below."
     }
   ],
